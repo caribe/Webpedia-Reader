@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 	connection->connect(tree, SIGNAL(collapseFolderSignal(Source *)), SLOT(folderCollapse(Source *)));
 
 	postsFrame = new PostsFrame(postsModel, this);
-	connection->connect(postsFrame, SIGNAL(action(Post *, int)), SLOT(sendAction(Post *, int)));
+	connection->connect(postsFrame, SIGNAL(action(PostsArray &, int)), SLOT(sendAction(PostsArray &, int)));
 	connect(postsFrame, SIGNAL(linkClicked(QUrl)), SLOT(openLink(QUrl)));
 
 

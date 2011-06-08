@@ -9,6 +9,8 @@ PostsFrame::PostsFrame(ModelPosts *postsModel, QWidget *parent) : QSplitter(pare
 
 	addWidget(list);
 
+	connect(list->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), SLOT(postSelected(QModelIndex, QModelIndex)));
+
 	// *** Viewer
 
 	QVBoxLayout *viewerLayout = new QVBoxLayout();
@@ -37,59 +39,66 @@ PostsFrame::PostsFrame(ModelPosts *postsModel, QWidget *parent) : QSplitter(pare
 	viewerFrame->setLayout(viewerLayout);
 
 	addWidget(viewerFrame);
-
-	// *** Connections
-
-	connect(list->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), SLOT(postSelected(QModelIndex, QModelIndex)));
 }
 
 
-void PostsFrame::actionDelete() {
+void PostsFrame::actionGeneric(int mode) {
+	PostsArray postsList;
 	QModelIndexList indexes = list->selectionModel()->selectedRows();
-	if (indexes.length() == 1) emit action(static_cast<Post *>(indexes.at(0).internalPointer()), 0);
+	foreach (QModelIndex index, indexes) {
+		postsList << static_cast<Post *>(index.internalPointer());
+	}
+	if (postsList.length() > 0) emit action(postsList, mode);
+}
+
+void PostsFrame::actionDelete() {
+	actionGeneric(0);
 }
 
 void PostsFrame::actionLike() {
-	QModelIndexList indexes = list->selectionModel()->selectedRows();
-	if (indexes.length() == 1) emit action(static_cast<Post *>(indexes.at(0).internalPointer()), 1);
+	actionGeneric(1);
 }
 
 void PostsFrame::actionUnlike() {
-	QModelIndexList indexes = list->selectionModel()->selectedRows();
-	if (indexes.length() == 1) emit action(static_cast<Post *>(indexes.at(0).internalPointer()), 2);
+	actionGeneric(2);
 }
 
 void PostsFrame::actionFlag() {
-	QModelIndexList indexes = list->selectionModel()->selectedRows();
-	if (indexes.length() == 1) emit action(static_cast<Post *>(indexes.at(0).internalPointer()), 3);
+	actionGeneric(3);
 }
 
 void PostsFrame::actionUnflag() {
-	QModelIndexList indexes = list->selectionModel()->selectedRows();
-	if (indexes.length() == 1) emit action(static_cast<Post *>(indexes.at(0).internalPointer()), 4);
+	actionGeneric(4);
 }
 
 void PostsFrame::actionRead() {
-	QModelIndexList indexes = list->selectionModel()->selectedRows();
-	if (indexes.length() == 1) emit action(static_cast<Post *>(indexes.at(0).internalPointer()), 5);
+	actionGeneric(5);
 }
 
 void PostsFrame::actionUnread() {
-	QModelIndexList indexes = list->selectionModel()->selectedRows();
-	if (indexes.length() == 1) emit action(static_cast<Post *>(indexes.at(0).internalPointer()), 6);
+	actionGeneric(6);
 }
 
-void PostsFrame::postSelected(const QModelIndex & current, const QModelIndex & previous) {
+
+
+void PostsFrame::postSelected(const QModelIndex & current, const QModelIndex & previous)
+{
 	Post *post = (Post *)current.internalPointer();
 	viewerTitle->setText(QString("<h3>%1</h3>").arg(post->title));
 	viewer->setHtml("<html><body>"+post->body+"</body></html>");
 }
 
-void PostsFrame::actionLink(QUrl link) {
+
+
+void PostsFrame::actionLink(QUrl link)
+{
 	emit linkClicked(link);
 }
 
-void PostsFrame::openPost() {
+
+
+void PostsFrame::openPost()
+{
 	QModelIndexList indexes = list->selectionModel()->selectedRows();
 	if (indexes.length() == 1) {
 		Post *post = static_cast<Post *>(indexes.at(0).internalPointer());
@@ -97,7 +106,10 @@ void PostsFrame::openPost() {
 	}
 }
 
-void PostsFrame::keyPressEvent(QKeyEvent *event) {
+
+
+void PostsFrame::keyPressEvent(QKeyEvent *event)
+{
 	switch (event->key()) {
 	case Qt::Key_R:
 		actionRead();

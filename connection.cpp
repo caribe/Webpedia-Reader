@@ -101,16 +101,23 @@ void Connection::renameFolder(Source *source)
 }
 
 
-void Connection::sendAction(Post *item, int code)
+void Connection::sendAction(PostsArray &postsArray, int code)
 {
 	QStringList modes;
 	modes << "delete" << "like" << "unlike" << "flag" << "unflag" << "read" << "unread";
 
-	if (modes[code] != "unread") {
-		mainWindow->sourcesModel->updateUnreadCount(item->source, -1);
+	QStringList sources;
+	foreach (Post *post, postsArray) {
+		qDebug() << post->id;
+		sources << QString::number(post->id);
+		if (modes[code] != "unread") {
+			mainWindow->sourcesModel->updateUnreadCount(post->source, -1);
+		}
 	}
 
-	sendRequest(QString("post%1/%2").arg(modes[code]).arg(item->id));
+	qDebug() << sources;
+
+	sendRequest(QString("post%1/%2").arg(modes[code]).arg(sources.join(",")));
 }
 
 

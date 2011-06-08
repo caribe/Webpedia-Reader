@@ -28,11 +28,12 @@ private:
 	void keyPressEvent(QKeyEvent *event);
 
 signals:
-	void action(Post *post, int code);
+	void action(PostsArray &postslist, int code);
 	void linkClicked(QUrl link);
 
 public slots:
 	void postSelected(const QModelIndex & current, const QModelIndex & previous);
+	void actionGeneric(int mode);
 	void actionDelete();
 	void actionLike();
 	void actionUnlike();

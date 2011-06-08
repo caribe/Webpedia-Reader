@@ -275,6 +275,8 @@ bool ModelSources::setData(const QModelIndex & index, const QVariant & value, in
 		emit dataChanged(index, index);
 		emit sourceRenamed(source);
 	}
+
+	return true;
 }
 
 

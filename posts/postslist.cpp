@@ -6,7 +6,7 @@ PostsList::PostsList(PostsFrame *parent) : QTableView(parent) {
 
 	setContextMenuPolicy(Qt::DefaultContextMenu);
 	setSelectionBehavior(QAbstractItemView::SelectRows);
-	setSelectionMode(QAbstractItemView::SingleSelection);
+	setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 	verticalHeader()->hide();
 	verticalHeader()->setDefaultSectionSize(verticalHeader()->fontMetrics().height() + 3);
@@ -61,7 +61,7 @@ PostsList::PostsList(PostsFrame *parent) : QTableView(parent) {
 void PostsList::contextMenuEvent(QContextMenuEvent *event) {
 	QModelIndexList indexList = selectionModel()->selectedRows();
 
-	if (indexList.length() == 1) {
+	if (indexList.length() > 0) {
 		Post *post = (Post *)indexList.at(0).internalPointer();
 
 		if (post->status == "read" || post->status == "new") {

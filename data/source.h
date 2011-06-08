@@ -8,6 +8,8 @@ class Source;
 
 #include "post.h"
 
+typedef QList<Post *> PostsArray;
+
 class Source : public QObject
 {
     Q_OBJECT
