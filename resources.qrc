@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/feed.png</file>
+        <file>resources/folder-open-feed.png</file>
+        <file>resources/arrow-circle.png</file>
+        <file>resources/cross-button.png</file>
+        <file>resources/feed-plus.png</file>
+        <file>resources/cross.png</file>
+        <file>resources/arrow-180.png</file>
+        <file>resources/arrow.png</file>
+        <file>resources/home.png</file>
+        <file>resources/navigation-180-button.png</file>
+        <file>resources/star.png</file>
+        <file>resources/user.png</file>
+        <file>resources/mail-open.png</file>
+        <file>resources/mail.png</file>
+        <file>resources/webpedia.png</file>
+        <file>resources/pencil.png</file>
+        <file>resources/folder--plus.png</file>
+        <file>resources/clipboard-paste.png</file>
+        <file>resources/star-empty.png</file>
+        <file>resources/flag-white.png</file>
+        <file>resources/flag.png</file>
+        <file>resources/plug-connect.png</file>
+        <file>resources/plug-disconnect.png</file>
+        <file>resources/eye.png</file>
+        <file>resources/network-status-busy.png</file>
+        <file>resources/network-status.png</file>
+        <file>resources/wrench.png</file>
+    </qresource>
+</RCC>
