@@ -15,6 +15,10 @@ class ModelSources : public QAbstractItemModel
 public:
 	explicit ModelSources(Source *database, QObject *parent = 0);
 
+	// Properties
+	Source *rootItem();
+	QHash<int, Source *> sourcesIndex;
+
 	// Subclassing
 	int rowCount(const QModelIndex & parent = QModelIndex()) const;
 	int columnCount(const QModelIndex & parent = QModelIndex()) const;
@@ -24,20 +28,20 @@ public:
 	QModelIndex parent (const QModelIndex & index = QModelIndex()) const;
 	QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
+	// Drag & Drop
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 	QMimeData *mimeData(const QModelIndexList &indexes) const;
 	QStringList mimeTypes() const;
 	Qt::DropActions supportedDropActions() const;
 
+	// Utils
 	void clearBranch(Source *source);
 	QModelIndex indexBySource(Source *source, Source *parent = 0);
 	void updateUnreadCount(Source *source, int value);
-
 	int sumUnreadPosts(Source *source = 0) const;
 
-	Source *rootItem();
-	QHash<int, Source *> sourcesIndex;
+	void updatePost(int source_id, int post_id, Post::Status status);
 
 	void clear();
 	void flush();

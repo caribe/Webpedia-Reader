@@ -70,7 +70,7 @@ void Connection::postSelected(const QModelIndex & current, const QModelIndex & p
 	if (item) {
 		mainWindow->post->setHtml("<html><body>"+item->body+"</body></html>");
 
-		if (item->status == "new") {
+		if (item->status == Post::unread) {
 			sendRequest(QString("postread/%1").arg(item->id));
 		}
 	}
@@ -108,14 +108,11 @@ void Connection::sendAction(PostsArray &postsArray, int code)
 
 	QStringList sources;
 	foreach (Post *post, postsArray) {
-		qDebug() << post->id;
 		sources << QString::number(post->id);
 		if (modes[code] != "unread") {
 			mainWindow->sourcesModel->updateUnreadCount(post->source, -1);
 		}
 	}
-
-	qDebug() << sources;
 
 	sendRequest(QString("post%1/%2").arg(modes[code]).arg(sources.join(",")));
 }
@@ -238,14 +235,16 @@ void Connection::finish(QNetworkReply *reply)
 					for (QDomElement el = rootN.firstChildElement("post"); !el.isNull(); el = el.nextSiblingElement("post")) {
 						Post *post = new Post();
 						post->id = el.attribute("id").toInt();
-						post->status = el.attribute("status");
+						post->status = stringToStatus(el.attribute("status"));
 						post->pubdate = QDateTime::fromString(el.attribute("date"), "yyyy/MM/dd hh:mm");
 						post->title = el.firstChildElement("title").text();
 						post->author = el.firstChildElement("author").text();
 						post->body = el.firstChildElement("body").text();
 						post->link = el.firstChildElement("link").text();
 						post->source = source;
+
 						source->posts.append(post);
+						source->postsIndex.insert(post->id, post);
 					}
 
 					postsModel->flush();
@@ -253,6 +252,12 @@ void Connection::finish(QNetworkReply *reply)
 					foreach (QModelIndex row, sel) {
 						mainWindow->postsFrame->list->selectRow(row.row());
 					}
+				}
+
+			} else if (rootN.toElement().tagName() == "posts-update") {
+
+				for (QDomElement el = rootN.firstChildElement("post"); !el.isNull(); el = el.nextSiblingElement("post")) {
+					sourcesModel->updatePost(el.attribute("source").toInt(), el.attribute("id").toInt(), stringToStatus(el.attribute("status")));
 				}
 
 			} else if (rootN.toElement().tagName() == "login") {
@@ -322,4 +327,21 @@ QByteArray Connection::postDataEncoding(ParamHash hash)
 	}
 
 	return list.join("&").toUtf8();
+}
+
+
+Post::Status Connection::stringToStatus(QString status) {
+	if (status == "read") {
+		return Post::read;
+	} else if (status == "unread") {
+		return Post::unread;
+	} else if (status == "liked") {
+		return Post::liked;
+	} else if (status == "flagged") {
+		return Post::flagged;
+	} else if (status == "deleted") {
+		return Post::deleted;
+	}
+
+	return Post::unread;
 }

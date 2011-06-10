@@ -23,6 +23,7 @@ public:
 	Source *parent;
 	QList<Source *> childs;
 	QList<Post *> posts;
+	QHash<int, Post *> postsIndex;
 
 signals:
 

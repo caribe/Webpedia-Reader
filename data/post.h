@@ -13,9 +13,19 @@ class Post : public QObject
     Q_OBJECT
 public:
     explicit Post(QObject *parent = 0);
+
+	enum Status {
+		unread,
+		read,
+		flagged,
+		liked,
+		deleted
+	};
+
 	int id;
-        QString title, author, body, status, link;
-        QDateTime pubdate;
+	QString title, author, body, link;
+	Status status;
+	QDateTime pubdate;
 	Source *source;
 
 signals:

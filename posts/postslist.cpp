@@ -64,19 +64,19 @@ void PostsList::contextMenuEvent(QContextMenuEvent *event) {
 	if (indexList.length() > 0) {
 		Post *post = (Post *)indexList.at(0).internalPointer();
 
-		if (post->status == "read" || post->status == "new") {
+		if (post->status == Post::read || post->status == Post::unread) {
 			menuRead->setVisible(true);
 			menuFlag->setVisible(true);
 			menuUnflag->setVisible(false);
 			menuLike->setVisible(true);
 			menuUnlike->setVisible(false);
-		} else if (post->status == "flag") {
+		} else if (post->status == Post::flagged) {
 			menuRead->setVisible(false);
 			menuFlag->setVisible(false);
 			menuUnflag->setVisible(true);
 			menuLike->setVisible(true);
 			menuUnlike->setVisible(false);
-		} else if (post->status == "like") {
+		} else if (post->status == Post::liked) {
 			menuRead->setVisible(false);
 			menuFlag->setVisible(true);
 			menuUnflag->setVisible(false);

@@ -6,10 +6,10 @@ ModelPosts::ModelPosts(Source *database, QObject *parent) : QAbstractTableModel(
 	currentSource = 0;
 
 	authorIcon = QIcon(":/resources/user.png");
-	statusIcons["new"] = QIcon(":/resources/mail.png");
-	statusIcons["read"] = QIcon(":/resources/mail-open.png");
-	statusIcons["like"] = QIcon(":/resources/star.png");
-	statusIcons["flag"] = QIcon(":/resources/flag.png");
+	statusIcons[Post::unread] = QIcon(":/resources/mail.png");
+	statusIcons[Post::read] = QIcon(":/resources/mail-open.png");
+	statusIcons[Post::liked] = QIcon(":/resources/star.png");
+	statusIcons[Post::flagged] = QIcon(":/resources/flag.png");
 }
 
 
@@ -161,13 +161,13 @@ void ModelPosts::sort(int column, Qt::SortOrder order) {
 
 bool ModelPosts::sortByStatusAsc(Post *p1, Post *p2)
 {
-	return (p1->status.compare(p2->status) > 0) ? true : false;
+	return (p1->status > p2->status) ? true : false;
 }
 
 
 bool ModelPosts::sortByStatusDesc(Post *p1, Post *p2)
 {
-	return (p1->status.compare(p2->status) <= 0) ? true : false;
+	return (p1->status <= p2->status) ? true : false;
 }
 
 
@@ -216,4 +216,13 @@ bool ModelPosts::sortByDateAsc(Post *p1, Post *p2)
 bool ModelPosts::sortByDateDesc(Post *p1, Post *p2)
 {
 	return (p1->pubdate <= p2->pubdate) ? true : false;
+}
+
+
+void ModelPosts::updatePost(int post_id) {
+	if (currentSource->postsIndex.contains(post_id)) {
+		Post *post = currentSource->postsIndex[post_id];
+		int row = currentSource->posts.indexOf(post);
+		emit dataChanged(createIndex(row, 0, post), createIndex(row, 4, post));
+	}
 }

@@ -25,6 +25,7 @@ public:
 
 	void clear();
 	void flush();
+	void updatePost(int post_id);
 
 	void sort( int column, Qt::SortOrder order = Qt::AscendingOrder);
 	static bool sortByStatusAsc(Post *p1, Post *p2);
@@ -42,7 +43,7 @@ public:
 
 private:
 	Source *database;
-	QHash<QString, QIcon> statusIcons;
+	QHash<Post::Status, QIcon> statusIcons;
 	QIcon authorIcon;
 
 signals:

@@ -39,6 +39,7 @@ private:
 	MainWindow *mainWindow;
 	void descendSourceTree(Source *current, QDomElement node, ModelSources *sourcesModel);
 	QByteArray postDataEncoding(ParamHash);
+	Post::Status stringToStatus(QString status);
 
 	void sendRequest(QString action, ParamHash &data, bool noAuth = false);
 	void sendRequest(QString action, bool noAuth = false);

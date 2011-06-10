@@ -319,3 +319,15 @@ void ModelSources::updateUnreadCount(Source *source, int value) {
 	QModelIndex index = indexBySource(source);
 	emit dataChanged(index, index.sibling(index.row(), 1));
 }
+
+
+void ModelSources::updatePost(int source_id, int post_id, Post::Status status) {
+	Source *source = this->sourcesIndex[source_id];
+	Post *post = source->postsIndex[post_id];
+	post->status = status;
+
+	int row = source->parent->childs.indexOf(source);
+	emit dataChanged(createIndex(row, 0, source), createIndex(row, 1, source));
+
+
+}
