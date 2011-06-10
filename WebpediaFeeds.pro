@@ -69,4 +69,5 @@ OTHER_FILES += \
     resources/eye.png \
     resources/network-status.png \
     resources/network-status-busy.png \
-    resources/wrench.png
+    resources/wrench.png \
+    resources/webpedia.svg

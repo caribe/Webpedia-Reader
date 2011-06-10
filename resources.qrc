@@ -27,5 +27,6 @@
         <file>resources/network-status-busy.png</file>
         <file>resources/network-status.png</file>
         <file>resources/wrench.png</file>
+        <file>resources/webpedia.svg</file>
     </qresource>
 </RCC>

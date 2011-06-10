@@ -2,7 +2,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
 {
-	QIcon icon(":/resources/webpedia.png");
+	QIcon icon(":/resources/webpedia.svg");
 	setWindowIcon(icon);
 
 	setWindowTitle(tr("Webpedia Reader"));
