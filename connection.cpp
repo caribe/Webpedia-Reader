@@ -109,9 +109,6 @@ void Connection::sendAction(PostsArray &postsArray, int code)
 	QStringList sources;
 	foreach (Post *post, postsArray) {
 		sources << QString::number(post->id);
-		if (modes[code] != "unread") {
-			mainWindow->sourcesModel->updateUnreadCount(post->source, -1);
-		}
 	}
 
 	sendRequest(QString("post%1/%2").arg(modes[code]).arg(sources.join(",")));
@@ -256,8 +253,17 @@ void Connection::finish(QNetworkReply *reply)
 
 			} else if (rootN.toElement().tagName() == "posts-update") {
 
+				QModelIndexList selection = mainWindow->postsFrame->list->selectionModel()->selectedRows();
+				postsModel->changed();
+
 				for (QDomElement el = rootN.firstChildElement("post"); !el.isNull(); el = el.nextSiblingElement("post")) {
-					sourcesModel->updatePost(el.attribute("source").toInt(), el.attribute("id").toInt(), stringToStatus(el.attribute("status")));
+					int post_id = el.attribute("id").toInt();
+					sourcesModel->updatePost(el.attribute("source").toInt(), post_id, stringToStatus(el.attribute("status")));
+				}
+
+				postsModel->flush();
+				if (selection.length() > 0) {
+					mainWindow->postsFrame->list->selectRow(selection[0].row());
 				}
 
 			} else if (rootN.toElement().tagName() == "login") {
@@ -333,13 +339,13 @@ QByteArray Connection::postDataEncoding(ParamHash hash)
 Post::Status Connection::stringToStatus(QString status) {
 	if (status == "read") {
 		return Post::read;
-	} else if (status == "unread") {
+	} else if (status == "new") {
 		return Post::unread;
-	} else if (status == "liked") {
+	} else if (status == "like") {
 		return Post::liked;
-	} else if (status == "flagged") {
+	} else if (status == "flag") {
 		return Post::flagged;
-	} else if (status == "deleted") {
+	} else if (status == "delete") {
 		return Post::deleted;
 	}
 

@@ -23,6 +23,12 @@ void ModelPosts::clear() {
 	}
 }
 
+
+void ModelPosts::changed() {
+	beginResetModel();
+}
+
+
 void ModelPosts::flush() {
 	endResetModel();
 }
@@ -220,9 +226,10 @@ bool ModelPosts::sortByDateDesc(Post *p1, Post *p2)
 
 
 void ModelPosts::updatePost(int post_id) {
+	beginResetModel();
 	if (currentSource->postsIndex.contains(post_id)) {
 		Post *post = currentSource->postsIndex[post_id];
 		int row = currentSource->posts.indexOf(post);
-		emit dataChanged(createIndex(row, 0, post), createIndex(row, 4, post));
 	}
+	endResetModel();
 }

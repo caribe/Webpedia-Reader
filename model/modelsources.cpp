@@ -322,12 +322,20 @@ void ModelSources::updateUnreadCount(Source *source, int value) {
 
 
 void ModelSources::updatePost(int source_id, int post_id, Post::Status status) {
-	Source *source = this->sourcesIndex[source_id];
+	Source *source = sourcesIndex[source_id];
 	Post *post = source->postsIndex[post_id];
-	post->status = status;
-
 	int row = source->parent->childs.indexOf(source);
+
+	if (post->status == Post::unread && status != Post::unread) source->unread--;
+	if (post->status != Post::unread && status == Post::unread) source->unread++;
+
+	if (status == Post::deleted) {
+		source->postsIndex.remove(post_id);
+		source->posts.removeOne(post);
+		delete post;
+	} else {
+		post->status = status;
+	}
+
 	emit dataChanged(createIndex(row, 0, source), createIndex(row, 1, source));
-
-
 }

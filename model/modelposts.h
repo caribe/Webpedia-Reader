@@ -22,6 +22,7 @@ public:
 
 	Post *getPost(const QModelIndex &index);
 	void setSource(Source *source);
+	void changed();
 
 	void clear();
 	void flush();
