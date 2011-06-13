@@ -32,7 +32,7 @@ PostsFrame::PostsFrame(ModelPosts *postsModel, QWidget *parent) : QSplitter(pare
 
 	viewer = new QTextBrowser();
 	viewer->setOpenLinks(false);
-	connect(viewer, SIGNAL(anchorClicked(QUrl)), SLOT(actionLink(QUrl)));
+	// connect(viewer, SIGNAL(anchorClicked(QUrl)), SLOT(actionLink(QUrl)));
 	viewerLayout->addWidget(viewer);
 
 	QWidget *viewerFrame = new QWidget();
@@ -90,9 +90,9 @@ void PostsFrame::postSelected(const QModelIndex & current, const QModelIndex & p
 
 
 
-void PostsFrame::actionLink(QUrl link)
+void PostsFrame::actionLink(QUrl link, QString title)
 {
-	emit linkClicked(link);
+	emit linkClicked(link, title);
 }
 
 
@@ -102,7 +102,7 @@ void PostsFrame::openPost()
 	QModelIndexList indexes = list->selectionModel()->selectedRows();
 	if (indexes.length() == 1) {
 		Post *post = static_cast<Post *>(indexes.at(0).internalPointer());
-		emit linkClicked(QUrl(post->link));
+		emit linkClicked(QUrl(post->link), post->title);
 	}
 }
 

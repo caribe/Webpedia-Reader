@@ -29,7 +29,7 @@ private:
 
 signals:
 	void action(PostsArray &postslist, int code);
-	void linkClicked(QUrl link);
+	void linkClicked(QUrl link, QString title);
 
 public slots:
 	void postSelected(const QModelIndex & current, const QModelIndex & previous);
@@ -43,7 +43,7 @@ public slots:
 	void actionUnread();
 
 private slots:
-	void actionLink(QUrl link);
+	void actionLink(QUrl link, QString title);
 	void openPost();
 };
 

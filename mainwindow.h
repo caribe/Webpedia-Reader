@@ -49,13 +49,13 @@ public:
 
 	QStandardItemModel *sourcesListModel;
 	SourceFrame *tree;
-	QWebView *post;
 	Wizard *wizard;
 	Connection *connection;
 	QString baseUrl;
 	PostsFrame *postsFrame;
 	BrowserFrame *browserFrame;
 
+	QSplitter *splitter1;
 	QStackedLayout *splitter2;
 
 	QAction *menuConnect, *menuDisconnect;
@@ -72,11 +72,12 @@ public:
 
 private slots:
 	void addFolder();
-	void openLink(QUrl link);
+	void openLink(QUrl link, QString title);
 	void optionsDialog();
 	void hideBrowser();
 	void menuHelpAbout();
 	void menuHelpAboutQt();
+	void onBeforeQuit();
 
 public slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason);

@@ -24,7 +24,13 @@ MainWindow::MainWindow(QWidget *parent)
 	connection = new Connection(this);
 	wizard = new Wizard(this);
 
-	// Central widget
+	// Browser
+
+	browserFrame = new BrowserFrame(this);
+	browserFrame->openLink(QUrl(baseUrl), "Webpedia");
+	connect(browserFrame, SIGNAL(hideSignal()), SLOT(hideBrowser()));
+
+	// Sources
 
 	tree = new SourceFrame(this);
 	tree->setModel(sourcesModel);
@@ -35,21 +41,15 @@ MainWindow::MainWindow(QWidget *parent)
 	connection->connect(tree, SIGNAL(expandFolderSignal(Source *)), SLOT(folderExpand(Source *)));
 	connection->connect(tree, SIGNAL(collapseFolderSignal(Source *)), SLOT(folderCollapse(Source *)));
 
+	// Posts
+
 	postsFrame = new PostsFrame(postsModel, this);
 	connection->connect(postsFrame, SIGNAL(action(PostsArray &, int)), SLOT(sendAction(PostsArray &, int)));
-	connect(postsFrame, SIGNAL(linkClicked(QUrl)), SLOT(openLink(QUrl)));
-
-
-	// Browser
-
-	browserFrame = new BrowserFrame(this);
-	post = browserFrame->browser;
-	post->setUrl(QUrl(baseUrl));
-	connect(browserFrame, SIGNAL(hideSignal()), SLOT(hideBrowser()));
+	connect(postsFrame, SIGNAL(linkClicked(QUrl, QString)), SLOT(openLink(QUrl, QString)));
 
 	// Global layout
 
-	QSplitter *splitter1 = new QSplitter(Qt::Horizontal);
+	splitter1 = new QSplitter(Qt::Horizontal);
 	QWidget *rightFrame = new QWidget();
 	splitter2 = new QStackedLayout();
 
@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
 	QAction *menuFileQuit = new QAction(QIcon(":/resources/cross-button.png"), tr("E&xit"), menuFile);
 	menuFileQuit->setShortcut(QKeySequence::Quit);
 	menuFile->addAction(menuFileQuit);
-	this->connect(menuFileQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect(menuFileQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
 	menuBar->addMenu(menuFile);
 
 	QMenu *menuSources = new QMenu("&Sources");
@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent)
 	menuSources->addSeparator();
 
 	QAction *menuSourcesAdd = new QAction(QIcon(":/resources/feed-plus.png"), tr("&Add source"), menuSources);
-	this->connect(menuSourcesAdd, SIGNAL(triggered()), wizard, SLOT(step0()));
+	connect(menuSourcesAdd, SIGNAL(triggered()), wizard, SLOT(step0()));
 	menuSources->addAction(menuSourcesAdd);
 
 	QAction *menuSourcesAddFolder = new QAction(QIcon(":/resources/folder--plus.png"), tr("Add &folder"), this);
@@ -136,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent)
 	trayIconMenu->addAction(trayUpdate);
 
 	QAction *trayQuit = new QAction(QIcon(":/resources/cross-button.png"), tr("&Exit"), trayIconMenu);
-	connect(trayQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect(trayQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
 	trayIconMenu->addAction(trayQuit);
 
 	trayIcon->setContextMenu(trayIconMenu);
@@ -149,20 +149,47 @@ MainWindow::MainWindow(QWidget *parent)
 	statusBar()->addWidget(statusLabel);
 	statusBar()->setStyleSheet("QStatusBar::item { border: 0 }");
 	setStatus(tr("Ready"), false);
-
-	// Poller
-
-	poller = new QTimer(this);
-	connection->connect(poller, SIGNAL(timeout()), SLOT(update()));
 }
+
 
 
 void MainWindow::init() {
 	// Session recovery or Login
 
 	QSettings settings;
+
+	// Window State
+
+	move(settings.value("state/position", QPoint(0, 0)).toPoint());
+	resize(settings.value("state/size", QSize(800, 600)).toSize());
+	if (settings.value("state/maximized", false).toBool() == true) showMaximized();
+
+	if (settings.contains("state/hsplitter")) {
+		QList<int> hSizeList;
+		foreach (QVariant size, settings.value("state/hsplitter").toList())
+			hSizeList << size.toInt();
+		splitter1->setSizes(hSizeList);
+	}
+
+	if (settings.contains("state/sourcecols")) {
+		QVariantList sourceCols = settings.value("state/sourcecols").toList();
+		for (int i = 0; i < sourceCols.length(); i++) {
+			tree->header()->resizeSection(i, sourceCols[i].toInt());
+		}
+
+		QVariantList sourceSizes;
+		for (int i = 0; i < tree->header()->count(); i++)
+			sourceSizes << tree->header()->sectionSize(i);
+		settings.setValue("state/sourcecols", sourceSizes);
+	}
+
+
+	// Poller
+
 	user = settings.value("user/user").toString();
-	poller->start(settings.value("settings/updateFrequency", 60).toInt() * 60000);
+	// poller->start(settings.value("settings/updateFrequency", 60).toInt() * 60000);
+
+	// Settings
 
 	if (user.isEmpty()) {
 		menuConnect->setVisible(true);
@@ -176,6 +203,10 @@ void MainWindow::init() {
 		logged = true;
 		connection->update();
 	}
+
+	poller = new QTimer(this);
+	connection->connect(poller, SIGNAL(timeout()), SLOT(update()));
+
 }
 
 
@@ -235,8 +266,8 @@ void MainWindow::addFolder() {
 }
 
 
-void MainWindow::openLink(QUrl link) {
-	post->setUrl(link);
+void MainWindow::openLink(QUrl link, QString title) {
+	browserFrame->openLink(link, title);
 	splitter2->setCurrentIndex(0);
 }
 
@@ -263,4 +294,23 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::setStatus(QString label, bool busy) {
 	statusLabel->setText((busy ? "<img src=\":/resources/network-status-busy.png\"/> " : "<img src=\":/resources/network-status.png\"/> ")+label);
+}
+
+void MainWindow::onBeforeQuit() {
+
+	QSettings settings;
+	settings.setValue("state/position", pos());
+	settings.setValue("state/size", size());
+	settings.setValue("state/maximized", isMaximized());
+
+	QVariantList hSizeList;
+	foreach (int size, splitter1->sizes()) hSizeList << size;
+	settings.setValue("state/hsplitter", hSizeList);
+
+	QVariantList sourceSizes;
+	for (int i = 0; i < tree->header()->count(); i++)
+		sourceSizes << tree->header()->sectionSize(i);
+	settings.setValue("state/sourcecols", sourceSizes);
+
+	qApp->quit();
 }

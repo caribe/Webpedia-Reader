@@ -6,6 +6,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QTabWidget>
+
 #include "data/post.h"
 
 class BrowserFrame : public QWidget
@@ -13,19 +15,20 @@ class BrowserFrame : public QWidget
 	Q_OBJECT
 
 private:
-	QLabel *browserTitle;
+	QTabWidget *tabWidget;
 
 public:
 	explicit BrowserFrame(QWidget *parent = 0);
-	QWebView *browser;
-	void displayPost(Post *post);
 
 signals:
 	void hideSignal();
 
+public slots:
+	void openLink(QUrl url, QString title);
+
 private slots:
 	void browserHome();
-	void browserClose();
+	void closeTab(int i);
 };
 
 #endif // BROWSERFRAME_H

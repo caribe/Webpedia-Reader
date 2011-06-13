@@ -68,7 +68,7 @@ void Connection::postSelected(const QModelIndex & current, const QModelIndex & p
 	Post *item = model->getPost(current);
 
 	if (item) {
-		mainWindow->post->setHtml("<html><body>"+item->body+"</body></html>");
+		// mainWindow->post->setHtml("<html><body>"+item->body+"</body></html>");
 
 		if (item->status == Post::unread) {
 			sendRequest(QString("postread/%1").arg(item->id));
@@ -247,7 +247,11 @@ void Connection::finish(QNetworkReply *reply)
 					postsModel->flush();
 
 					foreach (QModelIndex row, sel) {
-						mainWindow->postsFrame->list->selectRow(row.row());
+						if (row.row() < postsModel->rowCount()) {
+							mainWindow->postsFrame->list->selectRow(row.row());
+						} else {
+							mainWindow->postsFrame->list->selectRow(postsModel->rowCount() - 1);
+						}
 					}
 				}
 
