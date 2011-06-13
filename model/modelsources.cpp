@@ -323,7 +323,11 @@ void ModelSources::updateUnreadCount(Source *source, int value) {
 
 void ModelSources::updatePost(int source_id, int post_id, Post::Status status) {
 	Source *source = sourcesIndex[source_id];
+	if (!source) return;
+
 	Post *post = source->postsIndex[post_id];
+	if (!post) return;
+
 	int row = source->parent->childs.indexOf(source);
 
 	if (post->status == Post::unread && status != Post::unread) source->unread--;

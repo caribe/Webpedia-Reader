@@ -30,9 +30,9 @@ PostsFrame::PostsFrame(ModelPosts *postsModel, QWidget *parent) : QSplitter(pare
 
 	viewerLayout->addLayout(viewerTitleLayout);
 
-	viewer = new QTextBrowser();
-	viewer->setOpenLinks(false);
-	// connect(viewer, SIGNAL(anchorClicked(QUrl)), SLOT(actionLink(QUrl)));
+	viewer = new QWebView();
+	viewer->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+	connect(viewer, SIGNAL(linkClicked(QUrl)), SLOT(actionLink(QUrl)));
 	viewerLayout->addWidget(viewer);
 
 	QWidget *viewerFrame = new QWidget();
@@ -83,16 +83,16 @@ void PostsFrame::actionUnread() {
 
 void PostsFrame::postSelected(const QModelIndex & current, const QModelIndex & previous)
 {
-	Post *post = (Post *)current.internalPointer();
+	Post *post = static_cast<Post *>(current.internalPointer());
 	viewerTitle->setText(QString("<h3>%1</h3>").arg(post->title));
-	viewer->setHtml("<html><body>"+post->body+"</body></html>");
+	viewer->setHtml("<!DOCTYPE html>\n<html>\n<body>\n"+post->body+"</body>\n</html>\n");
 }
 
 
 
-void PostsFrame::actionLink(QUrl link, QString title)
+void PostsFrame::actionLink(QUrl link)
 {
-	emit linkClicked(link, title);
+	emit linkClicked(link, "Webpedia");
 }
 
 

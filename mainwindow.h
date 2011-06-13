@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QSystemTrayIcon>
 #include <QStatusBar>
+#include <QToolBar>
 #include <QTimer>
 
 class MainWindow;

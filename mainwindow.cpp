@@ -123,6 +123,41 @@ MainWindow::MainWindow(QWidget *parent)
 
 	this->setMenuBar(menuBar);
 
+	// Toolbar
+
+	QToolBar *toolbar = new QToolBar(this);
+	toolbar->setMovable(false);
+
+	QAction *tbUpdate = new QAction(QIcon(":/resources/arrow-circle.png"), tr("&Update all sources"), toolbar);
+	toolbar->addAction(tbUpdate);
+
+	toolbar->addSeparator();
+
+	QAction *tbPostRead = new QAction(QIcon(":/resources/mail-open.png"), tr("Set as read"), toolbar);
+	toolbar->addAction(tbPostRead);
+
+	QAction *tbPostUnread = new QAction(QIcon(":/resources/mail.png"), tr("Set as unread"), toolbar);
+	toolbar->addAction(tbPostUnread);
+
+	QAction *tbPostFlag = new QAction(QIcon(":/resources/flag.png"), tr("Flag this post"), toolbar);
+	toolbar->addAction(tbPostFlag);
+
+	QAction *tbPostLike = new QAction(QIcon(":/resources/star.png"), tr("Like this post"), toolbar);
+	toolbar->addAction(tbPostLike);
+
+	QAction *tbPostDelete = new QAction(QIcon(":/resources/cross.png"), tr("Delete this post"), toolbar);
+	toolbar->addAction(tbPostDelete);
+
+	toolbar->addSeparator();
+
+	QAction *tbBack = new QAction(QIcon(":/resources/arrow-180.png"), tr("&Back"), toolbar);
+	toolbar->addAction(tbBack);
+
+	QAction *tbHome = new QAction(QIcon(":/resources/home.png"), tr("&Home"), toolbar);
+	toolbar->addAction(tbHome);
+
+	addToolBar(toolbar);
+
 	// Tray Icon
 
 	trayIcon = new QSystemTrayIcon(icon, this);

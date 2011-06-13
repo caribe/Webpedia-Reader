@@ -8,7 +8,7 @@
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
-#include <QTextBrowser>
+#include <QWebView>
 
 class PostsFrame;
 
@@ -24,7 +24,7 @@ public:
 
 private:
 	QLabel *viewerTitle;
-	QTextBrowser *viewer;
+	QWebView *viewer;
 	void keyPressEvent(QKeyEvent *event);
 
 signals:
@@ -43,7 +43,7 @@ public slots:
 	void actionUnread();
 
 private slots:
-	void actionLink(QUrl link, QString title);
+	void actionLink(QUrl link);
 	void openPost();
 };
 

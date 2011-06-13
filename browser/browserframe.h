@@ -1,21 +1,16 @@
 #ifndef BROWSERFRAME_H
 #define BROWSERFRAME_H
 
-#include <QWebView>
-#include <QToolButton>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
 #include <QTabWidget>
+#include <QWebView>
 
 #include "data/post.h"
 
-class BrowserFrame : public QWidget
+class BrowserFrame : public QTabWidget
 {
 	Q_OBJECT
 
 private:
-	QTabWidget *tabWidget;
 
 public:
 	explicit BrowserFrame(QWidget *parent = 0);
@@ -29,6 +24,7 @@ public slots:
 private slots:
 	void browserHome();
 	void closeTab(int i);
+	void browserLoaded(bool ok);
 };
 
 #endif // BROWSERFRAME_H
