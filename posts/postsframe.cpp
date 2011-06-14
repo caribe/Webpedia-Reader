@@ -50,19 +50,20 @@ void PostsFrame::actionPost() {
 	foreach (QModelIndex index, indexes) {
 		postsList << static_cast<Post *>(index.internalPointer());
 	}
+
 	if (postsList.length() > 0) {
 
 		QString senderName = QObject::sender()->objectName();
 
-		if (senderName == "actionPostRead" || senderName == "menuPostRead") {
+		if (senderName == "actionPostRead") {
 			emit action(postsList, Post::read);
-		} else if (senderName == "actionPostLike" || senderName == "menuPostLike") {
+		} else if (senderName == "actionPostLike") {
 			emit action(postsList, Post::liked);
-		} else if (senderName == "actionPostFlag" || senderName == "menuPostFlag") {
+		} else if (senderName == "actionPostFlag") {
 			emit action(postsList, Post::flagged);
-		} else if (senderName == "actionPostUnread" || senderName == "menuPostUnread") {
+		} else if (senderName == "actionPostUnread") {
 			emit action(postsList, Post::unread);
-		} else if (senderName == "actionPostDelete" || senderName == "menuPostDelete") {
+		} else if (senderName == "actionPostDelete") {
 			emit action(postsList, Post::deleted);
 		}
 	}
@@ -89,8 +90,15 @@ void PostsFrame::actionLink(QUrl link)
 void PostsFrame::openPost()
 {
 	QModelIndexList indexes = list->selectionModel()->selectedRows();
-	if (indexes.length() == 1) {
+	if (indexes.length() > 0) {
 		Post *post = static_cast<Post *>(indexes.at(0).internalPointer());
+
+		if (post->status == Post::unread) {
+			PostsArray postsList;
+			postsList << post;
+			emit action(postsList, Post::read);
+		}
+
 		emit linkClicked(QUrl(post->link), post->title);
 	}
 }
