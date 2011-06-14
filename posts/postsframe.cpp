@@ -1,7 +1,9 @@
 #include "postsframe.h"
 
-PostsFrame::PostsFrame(ModelPosts *postsModel, QWidget *parent) : QSplitter(parent)
+PostsFrame::PostsFrame(ModelPosts *postsModel, MainWindow *parent) : QSplitter(parent)
 {
+	mainWindow = parent;
+
 	setOrientation(Qt::Vertical);
 
 	list = new PostsList(this);
@@ -42,41 +44,28 @@ PostsFrame::PostsFrame(ModelPosts *postsModel, QWidget *parent) : QSplitter(pare
 }
 
 
-void PostsFrame::actionGeneric(int mode) {
+void PostsFrame::actionPost() {
 	PostsArray postsList;
 	QModelIndexList indexes = list->selectionModel()->selectedRows();
 	foreach (QModelIndex index, indexes) {
 		postsList << static_cast<Post *>(index.internalPointer());
 	}
-	if (postsList.length() > 0) emit action(postsList, mode);
-}
+	if (postsList.length() > 0) {
 
-void PostsFrame::actionDelete() {
-	actionGeneric(0);
-}
+		QString senderName = QObject::sender()->objectName();
 
-void PostsFrame::actionLike() {
-	actionGeneric(1);
-}
-
-void PostsFrame::actionUnlike() {
-	actionGeneric(2);
-}
-
-void PostsFrame::actionFlag() {
-	actionGeneric(3);
-}
-
-void PostsFrame::actionUnflag() {
-	actionGeneric(4);
-}
-
-void PostsFrame::actionRead() {
-	actionGeneric(5);
-}
-
-void PostsFrame::actionUnread() {
-	actionGeneric(6);
+		if (senderName == "actionPostRead" || senderName == "menuPostRead") {
+			emit action(postsList, Post::read);
+		} else if (senderName == "actionPostLike" || senderName == "menuPostLike") {
+			emit action(postsList, Post::liked);
+		} else if (senderName == "actionPostFlag" || senderName == "menuPostFlag") {
+			emit action(postsList, Post::flagged);
+		} else if (senderName == "actionPostUnread" || senderName == "menuPostUnread") {
+			emit action(postsList, Post::unread);
+		} else if (senderName == "actionPostDelete" || senderName == "menuPostDelete") {
+			emit action(postsList, Post::deleted);
+		}
+	}
 }
 
 
@@ -103,27 +92,5 @@ void PostsFrame::openPost()
 	if (indexes.length() == 1) {
 		Post *post = static_cast<Post *>(indexes.at(0).internalPointer());
 		emit linkClicked(QUrl(post->link), post->title);
-	}
-}
-
-
-
-void PostsFrame::keyPressEvent(QKeyEvent *event)
-{
-	switch (event->key()) {
-	case Qt::Key_R:
-		actionRead();
-	break;
-	case Qt::Key_L:
-		actionLike();
-	break;
-	case Qt::Key_F:
-		actionFlag();
-	break;
-	case Qt::Key_Delete:
-		actionDelete();
-	break;
-	default:
-		QSplitter::keyPressEvent(event);
 	}
 }

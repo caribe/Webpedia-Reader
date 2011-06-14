@@ -3,6 +3,7 @@
 PostsList::PostsList(PostsFrame *parent) : QTableView(parent) {
 
 	this->parent = parent;
+	mainWindow = parent->mainWindow;
 
 	setContextMenuPolicy(Qt::DefaultContextMenu);
 	setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -19,36 +20,11 @@ PostsList::PostsList(PostsFrame *parent) : QTableView(parent) {
 
 	contextMenu = new QMenu(this);
 
-	menuRead = new QAction(QIcon(":/resources/mail-open.png"), tr("&Read"), this);
-	menuRead->setShortcut(Qt::Key_R);
-	parent->connect(menuRead, SIGNAL(triggered()), SLOT(actionRead()));
-	contextMenu->addAction(menuRead);
-
-	menuLike = new QAction(QIcon(":/resources/star.png"), tr("&Like"), this);
-	menuLike->setShortcut(Qt::Key_L);
-	parent->connect(menuLike, SIGNAL(triggered()), SLOT(actionLike()));
-	contextMenu->addAction(menuLike);
-
-	menuUnlike = new QAction(QIcon(":/resources/star-empty.png"), tr("&Unlike"), this);
-	parent->connect(menuUnlike, SIGNAL(triggered()), SLOT(actionUnlike()));
-	contextMenu->addAction(menuUnlike);
-
-	menuFlag = new QAction(QIcon(":/resources/flag.png"), tr("&Flag"), this);
-	menuLike->setShortcut(Qt::Key_F);
-	parent->connect(menuFlag, SIGNAL(triggered()), SLOT(actionFlag()));
-	contextMenu->addAction(menuFlag);
-
-	menuUnflag = new QAction(QIcon(":/resources/flag-white.png"), tr("&Unflag"), this);
-	parent->connect(menuUnflag, SIGNAL(triggered()), SLOT(actionUnflag()));
-	contextMenu->addAction(menuUnflag);
-
-	menuUnread = new QAction(QIcon(":/resources/mail.png"), tr("&Unread"), this);
-	parent->connect(menuUnread, SIGNAL(triggered()), SLOT(actionUnread()));
-	contextMenu->addAction(menuUnread);
-
-	QAction *menuDelete = new QAction(QIcon(":/resources/cross.png"), tr("&Delete"), this);
-	parent->connect(menuDelete, SIGNAL(triggered()), SLOT(actionDelete()));
-	contextMenu->addAction(menuDelete);
+	contextMenu->addAction(mainWindow->actionPostRead);
+	contextMenu->addAction(mainWindow->actionPostUnread);
+	contextMenu->addAction(mainWindow->actionPostFlag);
+	contextMenu->addAction(mainWindow->actionPostLike);
+	contextMenu->addAction(mainWindow->actionPostDelete);
 
 	contextMenu->addSeparator();
 
@@ -62,28 +38,23 @@ void PostsList::contextMenuEvent(QContextMenuEvent *event) {
 	QModelIndexList indexList = selectionModel()->selectedRows();
 
 	if (indexList.length() > 0) {
+		/*
 		Post *post = (Post *)indexList.at(0).internalPointer();
 
 		if (post->status == Post::read || post->status == Post::unread) {
 			menuRead->setVisible(true);
 			menuFlag->setVisible(true);
-			menuUnflag->setVisible(false);
 			menuLike->setVisible(true);
-			menuUnlike->setVisible(false);
 		} else if (post->status == Post::flagged) {
 			menuRead->setVisible(false);
 			menuFlag->setVisible(false);
-			menuUnflag->setVisible(true);
 			menuLike->setVisible(true);
-			menuUnlike->setVisible(false);
 		} else if (post->status == Post::liked) {
 			menuRead->setVisible(false);
 			menuFlag->setVisible(true);
-			menuUnflag->setVisible(false);
 			menuLike->setVisible(false);
-			menuUnlike->setVisible(true);
 		}
-
+*/
 		contextMenu->exec(event->globalPos());
 	}
 }

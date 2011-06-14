@@ -24,6 +24,28 @@ MainWindow::MainWindow(QWidget *parent)
 	connection = new Connection(this);
 	wizard = new Wizard(this);
 
+	// Actions
+
+	actionPostRead = new QAction(QIcon(":/resources/mail-open.png"), tr("Set as read"), this);
+	actionPostRead->setObjectName("actionPostRead");
+	actionPostRead->setShortcut(Qt::Key_R);
+
+	actionPostUnread = new QAction(QIcon(":/resources/mail.png"), tr("Set as unread"), this);
+	actionPostUnread->setObjectName("actionPostUnread");
+	actionPostUnread->setShortcut(Qt::Key_U);
+
+	actionPostFlag = new QAction(QIcon(":/resources/flag.png"), tr("Flag this post"), this);
+	actionPostFlag->setObjectName("actionPostFlag");
+	actionPostFlag->setShortcut(Qt::Key_F);
+
+	actionPostLike = new QAction(QIcon(":/resources/star.png"), tr("Like this post"), this);
+	actionPostLike->setObjectName("actionPostLike");
+	actionPostLike->setShortcut(Qt::Key_L);
+
+	actionPostDelete = new QAction(QIcon(":/resources/cross.png"), tr("Delete this post"), this);
+	actionPostDelete->setObjectName("actionPostDelete");
+	actionPostDelete->setShortcut(Qt::Key_Delete);
+
 	// Browser
 
 	browserFrame = new BrowserFrame(this);
@@ -44,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
 	// Posts
 
 	postsFrame = new PostsFrame(postsModel, this);
-	connection->connect(postsFrame, SIGNAL(action(PostsArray &, int)), SLOT(sendAction(PostsArray &, int)));
+	connection->connect(postsFrame, SIGNAL(action(PostsArray &, Post::Status)), SLOT(sendAction(PostsArray &, Post::Status)));
 	connect(postsFrame, SIGNAL(linkClicked(QUrl, QString)), SLOT(openLink(QUrl, QString)));
 
 	// Global layout
@@ -61,6 +83,14 @@ MainWindow::MainWindow(QWidget *parent)
 	splitter1->addWidget(rightFrame);
 
 	this->setCentralWidget(splitter1);
+
+	// Actions connectio
+
+	postsFrame->connect(actionPostRead, SIGNAL(triggered()), SLOT(actionPost()));
+	postsFrame->connect(actionPostUnread, SIGNAL(triggered()), SLOT(actionPost()));
+	postsFrame->connect(actionPostFlag, SIGNAL(triggered()), SLOT(actionPost()));
+	postsFrame->connect(actionPostLike, SIGNAL(triggered()), SLOT(actionPost()));
+	postsFrame->connect(actionPostDelete, SIGNAL(triggered()), SLOT(actionPost()));
 
 	// Menu bar
 
@@ -102,12 +132,22 @@ MainWindow::MainWindow(QWidget *parent)
 
 	menuBar->addMenu(menuSources);
 
+	QMenu *menuPosts = new QMenu("&Post");
+	menuBar->addMenu(menuPosts);
+
+	menuPosts->addAction(actionPostRead);
+	menuPosts->addAction(actionPostUnread);
+	menuPosts->addAction(actionPostFlag);
+	menuPosts->addAction(actionPostLike);
+	menuPosts->addAction(actionPostDelete);
+
 	QMenu *menuSettings = new QMenu("Se&ttings");
 	menuBar->addMenu(menuSettings);
 
 	QAction *menuSettingsOptions = new QAction(QIcon(":/resources/wrench.png"), tr("&Options"), menuSettings);
 	connect(menuSettingsOptions, SIGNAL(triggered()), SLOT(optionsDialog()));
 	menuSettings->addAction(menuSettingsOptions);
+
 
 	QMenu *menuHelp = new QMenu("&Help");
 
@@ -133,20 +173,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 	toolbar->addSeparator();
 
-	QAction *tbPostRead = new QAction(QIcon(":/resources/mail-open.png"), tr("Set as read"), toolbar);
-	toolbar->addAction(tbPostRead);
-
-	QAction *tbPostUnread = new QAction(QIcon(":/resources/mail.png"), tr("Set as unread"), toolbar);
-	toolbar->addAction(tbPostUnread);
-
-	QAction *tbPostFlag = new QAction(QIcon(":/resources/flag.png"), tr("Flag this post"), toolbar);
-	toolbar->addAction(tbPostFlag);
-
-	QAction *tbPostLike = new QAction(QIcon(":/resources/star.png"), tr("Like this post"), toolbar);
-	toolbar->addAction(tbPostLike);
-
-	QAction *tbPostDelete = new QAction(QIcon(":/resources/cross.png"), tr("Delete this post"), toolbar);
-	toolbar->addAction(tbPostDelete);
+	toolbar->addAction(actionPostRead);
+	toolbar->addAction(actionPostUnread);
+	toolbar->addAction(actionPostFlag);
+	toolbar->addAction(actionPostLike);
+	toolbar->addAction(actionPostDelete);
 
 	toolbar->addSeparator();
 

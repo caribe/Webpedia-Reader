@@ -101,10 +101,11 @@ void Connection::renameFolder(Source *source)
 }
 
 
-void Connection::sendAction(PostsArray &postsArray, int code)
+void Connection::sendAction(PostsArray &postsArray, Post::Status code)
 {
 	QStringList modes;
-	modes << "delete" << "like" << "unlike" << "flag" << "unflag" << "read" << "unread";
+
+	modes << "unread" << "read" << "flag" << "like" << "delete";
 
 	QStringList sources;
 	foreach (Post *post, postsArray) {

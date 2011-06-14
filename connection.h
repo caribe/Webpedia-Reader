@@ -51,7 +51,7 @@ public slots:
 	void postSelected(const QModelIndex & current, const QModelIndex & previous);
 	void addSource(QString url);
 	void sourceList();
-	void sendAction(PostsArray &postsArray, int code);
+	void sendAction(PostsArray &postsArray, Post::Status code);
 	void addFolder(Source *);
 	void moveFolder(Source *, Source *, int);
 	void renameFolder(Source *);

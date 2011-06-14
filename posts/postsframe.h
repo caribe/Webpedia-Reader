@@ -12,6 +12,7 @@
 
 class PostsFrame;
 
+#include "mainwindow.h"
 #include "postslist.h"
 #include "model/modelposts.h"
 
@@ -19,28 +20,21 @@ class PostsFrame : public QSplitter
 {
     Q_OBJECT
 public:
-	explicit PostsFrame(ModelPosts *postsModel, QWidget *parent = 0);
+	explicit PostsFrame(ModelPosts *postsModel, MainWindow *parent = 0);
 	PostsList *list;
+	MainWindow *mainWindow;
 
 private:
 	QLabel *viewerTitle;
 	QWebView *viewer;
-	void keyPressEvent(QKeyEvent *event);
 
 signals:
-	void action(PostsArray &postslist, int code);
+	void action(PostsArray &postslist, Post::Status code);
 	void linkClicked(QUrl link, QString title);
 
 public slots:
 	void postSelected(const QModelIndex & current, const QModelIndex & previous);
-	void actionGeneric(int mode);
-	void actionDelete();
-	void actionLike();
-	void actionUnlike();
-	void actionFlag();
-	void actionUnflag();
-	void actionRead();
-	void actionUnread();
+	void actionPost();
 
 private slots:
 	void actionLink(QUrl link);

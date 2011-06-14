@@ -10,6 +10,7 @@
 
 class PostsList;
 
+#include "mainwindow.h"
 #include "data/post.h"
 #include "postsframe.h"
 
@@ -19,12 +20,11 @@ class PostsList : public QTableView
 
 private:
 	PostsFrame *parent;
+	MainWindow *mainWindow;
 
 	QMenu *contextMenu;
 	QAction *menuLike;
-	QAction *menuUnlike;
 	QAction *menuFlag;
-	QAction *menuUnflag;
 	QAction *menuRead;
 	QAction *menuUnread;
 	void contextMenuEvent(QContextMenuEvent *event);

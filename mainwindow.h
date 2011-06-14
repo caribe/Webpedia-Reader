@@ -71,6 +71,8 @@ public:
 
 	bool logged;
 
+	QAction *actionPostRead, *actionPostUnread, *actionPostFlag, *actionPostLike, *actionPostDelete;
+
 private slots:
 	void addFolder();
 	void openLink(QUrl link, QString title);
