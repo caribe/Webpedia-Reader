@@ -32,9 +32,6 @@ private:
 public:
 	explicit PostsList(PostsFrame *parent = 0);
 
-private slots:
-	void actionLinkCopy();
-
 };
 
 #endif // POSTSLIST_H

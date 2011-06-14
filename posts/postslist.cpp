@@ -25,12 +25,8 @@ PostsList::PostsList(PostsFrame *parent) : QTableView(parent) {
 	contextMenu->addAction(mainWindow->actionPostFlag);
 	contextMenu->addAction(mainWindow->actionPostLike);
 	contextMenu->addAction(mainWindow->actionPostDelete);
-
 	contextMenu->addSeparator();
-
-	QAction *menuLinkCopy = new QAction(QIcon(":/resources/clipboard-paste.png"), tr("&Copy link address"), this);
-	connect(menuLinkCopy, SIGNAL(triggered()), SLOT(actionLinkCopy()));
-	contextMenu->addAction(menuLinkCopy);
+	contextMenu->addAction(mainWindow->actionPostView);
 
 }
 
@@ -59,12 +55,3 @@ void PostsList::contextMenuEvent(QContextMenuEvent *event) {
 	}
 }
 
-void PostsList::actionLinkCopy()
-{
-	QModelIndexList indexList = selectionModel()->selectedRows();
-	if (indexList.length() == 1) {
-		QClipboard *cb = QApplication::clipboard();
-		Post *post = (Post *)indexList[0].internalPointer();
-		cb->setText(post->link);
-	}
-}

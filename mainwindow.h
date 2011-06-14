@@ -71,7 +71,8 @@ public:
 
 	bool logged;
 
-	QAction *actionPostRead, *actionPostUnread, *actionPostFlag, *actionPostLike, *actionPostDelete;
+	QAction *actionPostRead, *actionPostUnread, *actionPostFlag, *actionPostLike, *actionPostDelete, *actionPostView, *actionPostCopy;
+	QAction *actionRefresh, *actionQuit;
 
 private slots:
 	void addFolder();

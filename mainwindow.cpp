@@ -26,6 +26,13 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// Actions
 
+	actionPostView = new QAction(QIcon(":/resources/eye.png"), tr("View post in browser"), this);
+	actionPostView->setObjectName("actionPostView");
+	actionPostView->setShortcut(Qt::Key_V);
+
+	actionPostCopy = new QAction(QIcon(":/resources/clipboard-paste.png"), tr("Copy post address"), this);
+	actionPostCopy->setObjectName("actionPostCopy");
+
 	actionPostRead = new QAction(QIcon(":/resources/mail-open.png"), tr("Set as read"), this);
 	actionPostRead->setObjectName("actionPostRead");
 	actionPostRead->setShortcut(Qt::Key_R);
@@ -45,6 +52,14 @@ MainWindow::MainWindow(QWidget *parent)
 	actionPostDelete = new QAction(QIcon(":/resources/cross.png"), tr("Delete this post"), this);
 	actionPostDelete->setObjectName("actionPostDelete");
 	actionPostDelete->setShortcut(Qt::Key_Delete);
+
+	actionRefresh = new QAction(QIcon(":/resources/arrow-circle.png"), tr("&Update all sources"), this);
+	actionRefresh->setObjectName("actionRefresh");
+	actionRefresh->setShortcut(Qt::CTRL + Qt::Key_F5);
+
+	actionQuit = new QAction(QIcon(":/resources/cross-button.png"), tr("E&xit"), this);
+	actionQuit->setObjectName("actionQuit");
+	actionQuit->setShortcut(QKeySequence::Quit);
 
 	// Browser
 
@@ -84,13 +99,18 @@ MainWindow::MainWindow(QWidget *parent)
 
 	this->setCentralWidget(splitter1);
 
-	// Actions connectio
+	// Actions connections
 
 	postsFrame->connect(actionPostRead, SIGNAL(triggered()), SLOT(actionPost()));
 	postsFrame->connect(actionPostUnread, SIGNAL(triggered()), SLOT(actionPost()));
 	postsFrame->connect(actionPostFlag, SIGNAL(triggered()), SLOT(actionPost()));
 	postsFrame->connect(actionPostLike, SIGNAL(triggered()), SLOT(actionPost()));
 	postsFrame->connect(actionPostDelete, SIGNAL(triggered()), SLOT(actionPost()));
+	postsFrame->connect(actionPostCopy, SIGNAL(triggered()), SLOT(actionLinkCopy()));
+	postsFrame->connect(actionPostView, SIGNAL(triggered()), SLOT(openPost()));
+
+	connection->connect(actionRefresh, SIGNAL(triggered()), SLOT(update()));
+	connect(actionQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
 
 	// Menu bar
 
@@ -108,17 +128,14 @@ MainWindow::MainWindow(QWidget *parent)
 
 	menuFile->addSeparator();
 
-	QAction *menuFileQuit = new QAction(QIcon(":/resources/cross-button.png"), tr("E&xit"), menuFile);
-	menuFileQuit->setShortcut(QKeySequence::Quit);
-	menuFile->addAction(menuFileQuit);
-	connect(menuFileQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
+	menuFile->addAction(actionQuit);
+
 	menuBar->addMenu(menuFile);
+
 
 	QMenu *menuSources = new QMenu("&Sources");
 
-	QAction *menuSourcesUpdate = new QAction(QIcon(":/resources/arrow-circle.png"), tr("&Update all sources"), menuSources);
-	connection->connect(menuSourcesUpdate, SIGNAL(triggered()), SLOT(update()));
-	menuSources->addAction(menuSourcesUpdate);
+	menuSources->addAction(actionRefresh);
 
 	menuSources->addSeparator();
 
@@ -132,14 +149,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 	menuBar->addMenu(menuSources);
 
+
 	QMenu *menuPosts = new QMenu("&Post");
 	menuBar->addMenu(menuPosts);
 
+	menuPosts->addAction(actionPostView);
+	menuPosts->addSeparator();
 	menuPosts->addAction(actionPostRead);
 	menuPosts->addAction(actionPostUnread);
 	menuPosts->addAction(actionPostFlag);
 	menuPosts->addAction(actionPostLike);
 	menuPosts->addAction(actionPostDelete);
+	menuPosts->addSeparator();
+	menuPosts->addAction(actionPostCopy);
+
 
 	QMenu *menuSettings = new QMenu("Se&ttings");
 	menuBar->addMenu(menuSettings);
@@ -168,8 +191,7 @@ MainWindow::MainWindow(QWidget *parent)
 	QToolBar *toolbar = new QToolBar(this);
 	toolbar->setMovable(false);
 
-	QAction *tbUpdate = new QAction(QIcon(":/resources/arrow-circle.png"), tr("&Update all sources"), toolbar);
-	toolbar->addAction(tbUpdate);
+	toolbar->addAction(actionRefresh);
 
 	toolbar->addSeparator();
 
@@ -197,13 +219,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 	trayIconMenu = new QMenu();
 
-	QAction *trayUpdate = new QAction(QIcon(":/resources/arrow-circle.png"), tr("&Update all sources"), trayIconMenu);
-	connection->connect(trayUpdate, SIGNAL(triggered()), SLOT(update()));
-	trayIconMenu->addAction(trayUpdate);
-
-	QAction *trayQuit = new QAction(QIcon(":/resources/cross-button.png"), tr("&Exit"), trayIconMenu);
-	connect(trayQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
-	trayIconMenu->addAction(trayQuit);
+	trayIconMenu->addAction(actionRefresh);
+	trayIconMenu->addAction(actionQuit);
 
 	trayIcon->setContextMenu(trayIconMenu);
 	connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));

@@ -9,6 +9,8 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QWebView>
+#include <QStackedWidget>
+#include <QWidgetAction>
 
 class PostsFrame;
 
@@ -35,6 +37,7 @@ signals:
 public slots:
 	void postSelected(const QModelIndex & current, const QModelIndex & previous);
 	void actionPost();
+	void actionLinkCopy();
 
 private slots:
 	void actionLink(QUrl link);

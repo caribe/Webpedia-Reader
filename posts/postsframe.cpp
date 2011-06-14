@@ -16,31 +16,36 @@ PostsFrame::PostsFrame(ModelPosts *postsModel, MainWindow *parent) : QSplitter(p
 	// *** Viewer
 
 	QVBoxLayout *viewerLayout = new QVBoxLayout();
+	viewerLayout->setContentsMargins(0, 0, 0, 0);
 
 	QHBoxLayout *viewerTitleLayout = new QHBoxLayout();
+	viewerTitleLayout->setContentsMargins(0, 0, 0, 0);
 
 	viewerTitle = new QLabel();
 	viewerTitle->setWordWrap(true);
 	viewerTitleLayout->addWidget(viewerTitle, 1);
 
-	QToolButton *viewerTitleButton = new QToolButton();
-	viewerTitleButton->setIcon(QIcon(":/resources/eye.png"));
-	viewerTitleButton->setToolTip(tr("Open post in browser"));
-	viewerTitleButton->setAutoRaise(true);
-	connect(viewerTitleButton, SIGNAL(clicked()), SLOT(openPost()));
-	viewerTitleLayout->addWidget(viewerTitleButton);
+	QToolBar *widgetAction = new QToolBar();
+	widgetAction->addAction(mainWindow->actionPostView);
+	viewerTitleLayout->addWidget(widgetAction);
 
 	viewerLayout->addLayout(viewerTitleLayout);
 
 	viewer = new QWebView();
 	viewer->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 	connect(viewer, SIGNAL(linkClicked(QUrl)), SLOT(actionLink(QUrl)));
-	viewerLayout->addWidget(viewer);
 
-	QWidget *viewerFrame = new QWidget();
-	viewerFrame->setLayout(viewerLayout);
+	QStackedWidget *stackedWidget = new QStackedWidget();
+	stackedWidget->setFrameShape(QFrame::StyledPanel);
+	stackedWidget->setFrameShadow(QFrame::Sunken);
+	stackedWidget->addWidget(viewer);
 
-	addWidget(viewerFrame);
+	viewerLayout->addWidget(stackedWidget);
+
+	QWidget *viewerWidget = new QWidget();
+	viewerWidget->setLayout(viewerLayout);
+
+	addWidget(viewerWidget);
 }
 
 
@@ -100,5 +105,15 @@ void PostsFrame::openPost()
 		}
 
 		emit linkClicked(QUrl(post->link), post->title);
+	}
+}
+
+
+void PostsFrame::actionLinkCopy()
+{
+	QModelIndexList indexList = list->selectionModel()->selectedRows();
+	if (indexList.length() > 0) {
+		Post *post = static_cast<Post *>(indexList[0].internalPointer());
+		QApplication::clipboard()->setText(post->link);
 	}
 }
