@@ -3,6 +3,7 @@
 
 #include <QTabWidget>
 #include <QWebView>
+#include <QDebug>
 
 #include "data/post.h"
 

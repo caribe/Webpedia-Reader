@@ -21,6 +21,15 @@ void BrowserFrame::browserHome()
 
 
 void BrowserFrame::openLink(QUrl url, QString title) {
+	// Set utm params
+	url.removeQueryItem("utm_source");
+	url.removeQueryItem("utm_medium");
+	url.removeQueryItem("utm_term");
+	url.removeQueryItem("utm_content");
+	url.removeQueryItem("utm_campaign");
+	url.addQueryItem("utm_source", "webpedia");
+	url.addQueryItem("utm_medium", "reader");
+
 	QWebView *browser = new QWebView(this);
 	browser->setUrl(url);
 	connect(browser, SIGNAL(loadFinished(bool)), SLOT(browserLoaded(bool)));
