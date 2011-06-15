@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QFormLayout>
 #include <QDialogButtonBox>
+#include <QStackedLayout>
 
 class Wizard;
 

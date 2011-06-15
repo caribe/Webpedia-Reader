@@ -17,13 +17,14 @@ SOURCES += main.cpp\
     data/post.cpp \
     model/modelsources.cpp \
     model/modelposts.cpp \
-    dialogs/wizard.cpp \
     posts/postslist.cpp \
     posts/postsframe.cpp \
     sources/sourceframe.cpp \
     dialogs/login.cpp \
     browser/browserframe.cpp \
-    dialogs/options.cpp
+    dialogs/options.cpp \
+    dialogs/wizardurl.cpp \
+    dialogs/wizardlist.cpp
 
 HEADERS  += mainwindow.h \
     connection.h \
@@ -31,13 +32,14 @@ HEADERS  += mainwindow.h \
     data/source.h \
     model/modelsources.h \
     model/modelposts.h \
-    dialogs/wizard.h \
     posts/postslist.h \
     posts/postsframe.h \
     sources/sourceframe.h \
     dialogs/login.h \
     browser/browserframe.h \
-    dialogs/options.h
+    dialogs/options.h \
+    dialogs/wizardurl.h \
+    dialogs/wizardlist.h
 
 RESOURCES += \
     resources.qrc

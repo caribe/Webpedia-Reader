@@ -16,7 +16,7 @@ PostsList::PostsList(PostsFrame *parent) : QTableView(parent) {
 
 	setAlternatingRowColors(true);
 	setShowGrid(false);
-	setStyleSheet("alternate-background-color: #E8F5C7; gridline-color: red");
+	setStyleSheet("alternate-background-color: #ECF5D3");
 
 	contextMenu = new QMenu(this);
 

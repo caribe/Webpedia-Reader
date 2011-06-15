@@ -21,7 +21,8 @@ class MainWindow;
 #include "posts/postsframe.h"
 #include "browser/browserframe.h"
 
-#include "dialogs/wizard.h"
+#include "dialogs/wizardurl.h"
+#include "dialogs/wizardlist.h"
 #include "dialogs/login.h"
 #include "dialogs/options.h"
 
@@ -82,6 +83,8 @@ private slots:
 	void menuHelpAbout();
 	void menuHelpAboutQt();
 	void onBeforeQuit();
+	void addSourceByUrl();
+	void addSourceByList();
 
 public slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason);

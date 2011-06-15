@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	setWindowTitle(tr("Webpedia Reader"));
 
-	baseUrl = QString("http://webpedia.altervista.org/");
+	baseUrl = QString("http://webpedia.slakko.org/");
 
 	logged = false;
 
@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent)
 	// Connection
 
 	connection = new Connection(this);
-	wizard = new Wizard(this);
 
 	// Actions
 
@@ -139,9 +138,13 @@ MainWindow::MainWindow(QWidget *parent)
 
 	menuSources->addSeparator();
 
-	QAction *menuSourcesAdd = new QAction(QIcon(":/resources/feed-plus.png"), tr("&Add source"), menuSources);
-	connect(menuSourcesAdd, SIGNAL(triggered()), wizard, SLOT(step0()));
-	menuSources->addAction(menuSourcesAdd);
+	QAction *menuSourcesAddUrl = new QAction(QIcon(":/resources/feed-plus.png"), tr("&Add source by URL"), menuSources);
+	connect(menuSourcesAddUrl, SIGNAL(triggered()), SLOT(addSourceByUrl()));
+	menuSources->addAction(menuSourcesAddUrl);
+
+	QAction *menuSourcesAddList = new QAction(QIcon(":/resources/feed-plus.png"), tr("&Add source"), menuSources);
+	connect(menuSourcesAddList, SIGNAL(triggered()), SLOT(addSourceByList()));
+	menuSources->addAction(menuSourcesAddList);
 
 	QAction *menuSourcesAddFolder = new QAction(QIcon(":/resources/folder--plus.png"), tr("Add &folder"), this);
 	connect(menuSourcesAddFolder, SIGNAL(triggered()), SLOT(addFolder()));
@@ -366,6 +369,7 @@ void MainWindow::optionsDialog() {
 		QSettings settings;
 		poller->setInterval(settings.value("settings/updateFrequency", 60).toInt() * 60000);
 	}
+	delete options;
 }
 
 
@@ -396,4 +400,27 @@ void MainWindow::onBeforeQuit() {
 	settings.setValue("state/sourcecols", sourceSizes);
 
 	qApp->quit();
+}
+
+
+void MainWindow::addSourceByUrl()
+{
+	WizardUrl *wizardUrl = new WizardUrl(this);
+	if (wizardUrl->exec() == QDialog::Accepted) {
+		connection->addSource(wizardUrl->getUrl());
+	}
+	delete wizardUrl;
+}
+
+
+void MainWindow::addSourceByList()
+{
+	WizardList *wizardList = new WizardList(this, sourcesListModel);
+	connection->connect(wizardList, SIGNAL(listRequest(QString)), SLOT(sendRequest(QString)));
+	connection->sendRequest("list");
+
+	if (wizardList->exec() == QDialog::Accepted) {
+		connection->sourceAdd(wizardList->getSource());
+	}
+	delete wizardList;
 }

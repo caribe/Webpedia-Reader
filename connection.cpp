@@ -42,6 +42,12 @@ void Connection::sendRequest(QString action, bool noAuth)
 }
 
 
+void Connection::sendRequest(QString action)
+{
+	sendRequest(action, false);
+}
+
+
 void Connection::update()
 {
 	if (mainWindow->logged == true) sendRequest("sources");
@@ -203,14 +209,21 @@ void Connection::finish(QNetworkReply *reply)
 
 			} else if (rootN.toElement().tagName() == "sources-list") {
 
+				QStringList headerLabels;
+				headerLabels << tr("Source") << tr("Followers");
+
 				sourcesListModel->clear();
+				sourcesListModel->setHorizontalHeaderLabels(headerLabels);
 
 				for (QDomElement sourceE = rootN.firstChildElement("source"); !sourceE.isNull(); sourceE = sourceE.nextSiblingElement("source")) {
 
 					QStandardItem *item = new QStandardItem(QIcon(":/resources/feed.png"), sourceE.text());
+					item->setEditable(false);
 					item->setData(sourceE.attribute("id").toInt(), Qt::UserRole + 1);
 
 					QStandardItem *follower = new QStandardItem(sourceE.attribute("follower"));
+					follower->setEditable(false);
+					follower->setTextAlignment(Qt::AlignRight);
 
 					QList<QStandardItem *> row;
 					row << item << follower;

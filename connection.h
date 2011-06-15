@@ -42,7 +42,7 @@ private:
 	Post::Status stringToStatus(QString status);
 
 	void sendRequest(QString action, ParamHash &data, bool noAuth = false);
-	void sendRequest(QString action, bool noAuth = false);
+	void sendRequest(QString action, bool noAuth);
 
 public slots:
 	void update();
@@ -57,6 +57,7 @@ public slots:
 	void renameFolder(Source *);
 	void folderExpand(Source *);
 	void folderCollapse(Source *);
+	void sendRequest(QString action);
 };
 
 #endif // UPDATER_H
