@@ -32,5 +32,6 @@
         <file>resources/clock.png</file>
         <file>resources/magnifier.png</file>
         <file>resources/plus.png</file>
+        <file>resources/application-browser.png</file>
     </qresource>
 </RCC>

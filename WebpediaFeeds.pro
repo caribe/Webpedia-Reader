@@ -76,4 +76,5 @@ OTHER_FILES += \
     resources/magnifier.png \
     resources/heart.png \
     resources/clock.png \
-    resources/plus.png
+    resources/plus.png \
+    resources/application-browser.png

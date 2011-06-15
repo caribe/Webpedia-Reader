@@ -60,6 +60,10 @@ MainWindow::MainWindow(QWidget *parent)
 	actionQuit->setObjectName("actionQuit");
 	actionQuit->setShortcut(QKeySequence::Quit);
 
+	actionShowBrowser = new QAction(QIcon(":/resources/application-browser.png"), tr("Show browser"), this);
+	actionShowBrowser->setObjectName("actionShowBrowser");
+	actionShowBrowser->setShortcut(Qt::CTRL + Qt::Key_B);
+
 	// Browser
 
 	browserFrame = new BrowserFrame(this);
@@ -109,13 +113,14 @@ MainWindow::MainWindow(QWidget *parent)
 	postsFrame->connect(actionPostView, SIGNAL(triggered()), SLOT(openPost()));
 
 	connection->connect(actionRefresh, SIGNAL(triggered()), SLOT(update()));
+	connect(actionShowBrowser, SIGNAL(triggered()), SLOT(showBrowser()));
 	connect(actionQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
 
 	// Menu bar
 
 	QMenuBar *menuBar = new QMenuBar();
 
-	QMenu *menuFile = new QMenu("&File");
+	QMenu *menuFile = new QMenu(tr("&File"));
 
 	menuConnect = new QAction(QIcon(":/resources/plug-connect.png"), tr("Connect"), menuFile);
 	connect(menuConnect, SIGNAL(triggered()), SLOT(userConnect()));
@@ -131,8 +136,14 @@ MainWindow::MainWindow(QWidget *parent)
 
 	menuBar->addMenu(menuFile);
 
+	QMenu *menuView = new QMenu(tr("&View"));
 
-	QMenu *menuSources = new QMenu("&Sources");
+	menuView->addAction(actionShowBrowser);
+
+	menuBar->addMenu(menuView);
+
+
+	QMenu *menuSources = new QMenu(tr("&Sources"));
 
 	menuSources->addAction(actionRefresh);
 
@@ -153,7 +164,7 @@ MainWindow::MainWindow(QWidget *parent)
 	menuBar->addMenu(menuSources);
 
 
-	QMenu *menuPosts = new QMenu("&Post");
+	QMenu *menuPosts = new QMenu(tr("&Post"));
 	menuBar->addMenu(menuPosts);
 
 	menuPosts->addAction(actionPostView);
@@ -167,7 +178,7 @@ MainWindow::MainWindow(QWidget *parent)
 	menuPosts->addAction(actionPostCopy);
 
 
-	QMenu *menuSettings = new QMenu("Se&ttings");
+	QMenu *menuSettings = new QMenu(tr("Se&ttings"));
 	menuBar->addMenu(menuSettings);
 
 	QAction *menuSettingsOptions = new QAction(QIcon(":/resources/wrench.png"), tr("&Options"), menuSettings);
@@ -175,7 +186,7 @@ MainWindow::MainWindow(QWidget *parent)
 	menuSettings->addAction(menuSettingsOptions);
 
 
-	QMenu *menuHelp = new QMenu("&Help");
+	QMenu *menuHelp = new QMenu(tr("&Help"));
 
 	QAction *actionHelpAbout = new QAction(tr("About Webpedia Reader"), menuHelp);
 	connect(actionHelpAbout, SIGNAL(triggered()), SLOT(menuHelpAbout()));
@@ -423,4 +434,10 @@ void MainWindow::addSourceByList()
 		connection->sourceAdd(wizardList->getSource());
 	}
 	delete wizardList;
+}
+
+
+void MainWindow::showBrowser()
+{
+	splitter2->setCurrentIndex(0);
 }

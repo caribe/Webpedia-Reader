@@ -73,7 +73,7 @@ public:
 	bool logged;
 
 	QAction *actionPostRead, *actionPostUnread, *actionPostFlag, *actionPostLike, *actionPostDelete, *actionPostView, *actionPostCopy;
-	QAction *actionRefresh, *actionQuit;
+	QAction *actionRefresh, *actionQuit, *actionShowBrowser;
 
 private slots:
 	void addFolder();
@@ -85,6 +85,7 @@ private slots:
 	void onBeforeQuit();
 	void addSourceByUrl();
 	void addSourceByList();
+	void showBrowser();
 
 public slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason);
