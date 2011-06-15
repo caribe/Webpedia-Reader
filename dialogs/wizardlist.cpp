@@ -66,7 +66,7 @@ WizardList::WizardList(QWidget *parent, QStandardItemModel *model) : QDialog(par
 	buttonsLayout->addWidget(buttonSpecials);
 	buttonsGroup->addButton(buttonSpecials, 5);
 
-	QPushButton *buttonSearch = new QPushButton(QIcon(":/resources/wrench.png"), tr("Search"));
+	QPushButton *buttonSearch = new QPushButton(QIcon(":/resources/magnifier.png"), tr("Search"));
 	buttonSearch->setCheckable(true);
 	buttonsLayout->addWidget(buttonSearch);
 	buttonsGroup->addButton(buttonSearch, 6);
@@ -74,20 +74,49 @@ WizardList::WizardList(QWidget *parent, QStandardItemModel *model) : QDialog(par
 	buttonsLayout->addStretch(1);
 
 	connect(buttonsGroup, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
-	buttonFollowed->click();
 
 	QWidget *tabBar = new QWidget(this);
 	tabBar->setLayout(buttonsLayout);
 
+	// Search
+
+	QFormLayout *searchForm = new QFormLayout();
+
+	searchLineEdit = new QLineEdit();
+	searchForm->addRow(tr("&Search:"), searchLineEdit);
+
+	QHBoxLayout *searchSubmitLayout = new QHBoxLayout();
+	QPushButton *searchSubmit = new QPushButton(QIcon(":/resources/magnifier.png"), "Search");
+	searchSubmitLayout->addStretch(1);
+	searchSubmitLayout->addWidget(searchSubmit);
+	searchForm->addRow(searchSubmitLayout);
+	connect(searchSubmit, SIGNAL(clicked()), SLOT(searchSubmitted()));
+
+	QWidget *searchWidget = new QWidget();
+	searchWidget->setLayout(searchForm);
+
 	// Layout
 
-	QVBoxLayout *layout = new QVBoxLayout();
+	QVBoxLayout *listLayout = new QVBoxLayout();
+	listLayout->addWidget(listTable);
+	listLayout->addWidget(buttonBox);
 
+	QWidget *listWidget = new QWidget();
+	listWidget->setLayout(listLayout);
+
+	stackedContent = new QStackedWidget();
+	stackedContent->addWidget(listWidget);
+	stackedContent->addWidget(searchWidget);
+
+	QVBoxLayout *layout = new QVBoxLayout();
 	layout->addWidget(tabBar);
-	layout->addWidget(listTable);
-	layout->addWidget(buttonBox);
+	layout->addWidget(stackedContent);
 
 	setLayout(layout);
+
+	// Init
+
+	buttonFollowed->click();
 
 }
 
@@ -104,21 +133,32 @@ int WizardList::getSource() {
 
 void WizardList::buttonClicked(int id) {
 
-	switch (id) {
-	case 1:
-		emit listRequest("list");
-		break;
-	case 2:
-		emit listRequest("list/liked");
-		break;
-	case 3:
-		emit listRequest("list/recent");
-		break;
-	case 4:
-		emit listRequest("list/updated");
-		break;
-	case 5:
-		emit listRequest("list/specials");
-		break;
+	if (id == 6) {
+		stackedContent->setCurrentIndex(1);
+	} else {
+		stackedContent->setCurrentIndex(0);
+		switch (id) {
+		case 1:
+			emit listRequest("list");
+			break;
+		case 2:
+			emit listRequest("list/liked");
+			break;
+		case 3:
+			emit listRequest("list/recent");
+			break;
+		case 4:
+			emit listRequest("list/updated");
+			break;
+		case 5:
+			emit listRequest("list/specials");
+			break;
+		}
 	}
+}
+
+
+void WizardList::searchSubmitted() {
+	emit listRequest("sourcesearch/"+searchLineEdit->text());
+	stackedContent->setCurrentIndex(0);
 }

@@ -8,9 +8,11 @@
 #include <QDialogButtonBox>
 #include <QStandardItemModel>
 #include <QHeaderView>
-#include <QStackedLayout>
+#include <QStackedWidget>
 #include <QTabBar>
 #include <QButtonGroup>
+#include <QFormLayout>
+#include <QLineEdit>
 
 class WizardList : public QDialog
 {
@@ -21,12 +23,15 @@ public:
 
 private:
 	QTableView *listTable;
+	QStackedWidget *stackedContent;
+	QLineEdit *searchLineEdit;
 
 signals:
 	void listRequest(QString mode);
 
 private slots:
 	void buttonClicked(int);
+	void searchSubmitted();
 
 public slots:
 
