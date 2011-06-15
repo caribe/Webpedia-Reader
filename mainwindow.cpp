@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	setWindowTitle(tr("Webpedia Reader"));
 
-	baseUrl = QString("http://webpedia.slakko.org/");
+	baseUrl = QString("http://webpedia.altervista.org/");
 
 	logged = false;
 
@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
 	actionPostFlag->setObjectName("actionPostFlag");
 	actionPostFlag->setShortcut(Qt::Key_F);
 
-	actionPostLike = new QAction(QIcon(":/resources/star.png"), tr("Like this post"), this);
+	actionPostLike = new QAction(QIcon(":/resources/heart.png"), tr("Like this post"), this);
 	actionPostLike->setObjectName("actionPostLike");
 	actionPostLike->setShortcut(Qt::Key_L);
 

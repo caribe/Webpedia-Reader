@@ -28,5 +28,9 @@
         <file>resources/network-status.png</file>
         <file>resources/wrench.png</file>
         <file>resources/webpedia.svg</file>
+        <file>resources/heart.png</file>
+        <file>resources/clock.png</file>
+        <file>resources/magnifier.png</file>
+        <file>resources/plus.png</file>
     </qresource>
 </RCC>

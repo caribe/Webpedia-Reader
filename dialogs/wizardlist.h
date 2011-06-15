@@ -8,6 +8,9 @@
 #include <QDialogButtonBox>
 #include <QStandardItemModel>
 #include <QHeaderView>
+#include <QStackedLayout>
+#include <QTabBar>
+#include <QButtonGroup>
 
 class WizardList : public QDialog
 {
@@ -21,6 +24,9 @@ private:
 
 signals:
 	void listRequest(QString mode);
+
+private slots:
+	void buttonClicked(int);
 
 public slots:
 

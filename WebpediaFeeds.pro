@@ -72,4 +72,8 @@ OTHER_FILES += \
     resources/network-status.png \
     resources/network-status-busy.png \
     resources/wrench.png \
-    resources/webpedia.svg
+    resources/webpedia.svg \
+    resources/magnifier.png \
+    resources/heart.png \
+    resources/clock.png \
+    resources/plus.png
