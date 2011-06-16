@@ -6,3 +6,20 @@ Source::Source(QObject *parent) : QObject(parent)
 	this->id = 0;
 	this->feed = 0;
 }
+
+
+void Source::updateDateTime()
+{
+	dateTime = QDateTime::currentDateTime();
+}
+
+bool Source::refreshNeeded()
+{
+	if (this->feed == 0) return false;
+
+	if (dateTime.secsTo(QDateTime::currentDateTime()) >= 60 * 15) {
+		return true;
+	} else {
+		return false;
+	}
+}

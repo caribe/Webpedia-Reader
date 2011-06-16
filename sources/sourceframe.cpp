@@ -19,7 +19,7 @@ SourceFrame::SourceFrame(MainWindow *parent) : QTreeView(parent)
 	contextMenu->addAction(menuRename);
 
 	QAction *menuDelete = new QAction(QIcon(":/resources/cross.png"), tr("&Delete"), this);
-	menuDelete->setShortcut(QKeySequence::Delete);
+	menuDelete->setShortcut(Qt::Key_Delete);
 	connect(menuDelete, SIGNAL(triggered()), SLOT(menuDeleteAction()));
 	contextMenu->addAction(menuDelete);
 

@@ -26,7 +26,6 @@ public:
 
 	void clear();
 	void flush();
-	void updatePost(int post_id);
 
 	void sort( int column, Qt::SortOrder order = Qt::AscendingOrder);
 	static bool sortByStatusAsc(Post *p1, Post *p2);

@@ -57,11 +57,9 @@ void Connection::update()
 void Connection::sourceSelected(const QModelIndex & index)
 {
 	Source *source = static_cast<Source *>(index.internalPointer());
-	if (source->feed == 0) {
-		mainWindow->postsModel->setSource(source);
-	} else {
-		mainWindow->postsModel->currentSource = source;
-		mainWindow->splitter2->setCurrentIndex(1);
+	mainWindow->splitter2->setCurrentIndex(1);
+	mainWindow->postsModel->setSource(source);
+	if (source->refreshNeeded()) {
 		sendRequest(QString("source/%1").arg(source->id));
 	}
 }
@@ -251,6 +249,8 @@ void Connection::finish(QNetworkReply *reply)
 							mainWindow->postsFrame->list->selectRow(postsModel->rowCount() - 1);
 						}
 					}
+
+					source->updateDateTime();
 				}
 
 			} else if (rootN.toElement().tagName() == "posts-update") {

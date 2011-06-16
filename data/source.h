@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QDateTime>
 
 class Source;
 
@@ -25,6 +26,12 @@ public:
 
 	QList<Post *> posts;
 	QHash<int, Post *> postsIndex;
+
+	void updateDateTime();
+	bool refreshNeeded();
+
+private:
+	QDateTime dateTime;
 
 signals:
 

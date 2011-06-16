@@ -74,12 +74,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	browserFrame = new BrowserFrame(this);
 	browserFrame->openLink(QUrl(baseUrl), "Webpedia");
+
 	connect(browserFrame, SIGNAL(hideSignal()), SLOT(hideBrowser()));
 
 	// Sources
 
 	tree = new SourceFrame(this);
 	tree->setModel(sourcesModel);
+
 	connection->connect(sourcesModel, SIGNAL(sourceMoved(Source*,Source*,int)), SLOT(moveFolder(Source*,Source*,int)));
 	connection->connect(sourcesModel, SIGNAL(sourceRenamed(Source*)), SLOT(renameFolder(Source*)));
 	connection->connect(tree, SIGNAL(activated(QModelIndex)), SLOT(sourceSelected(QModelIndex)));
@@ -154,7 +156,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	menuBar->addMenu(menuView);
 
 
-	QMenu *menuSources = new QMenu(tr("&Sources"));
+	QMenu *menuSources = new QMenu(tr("&Source"));
 
 	menuSources->addAction(actionRefresh);
 

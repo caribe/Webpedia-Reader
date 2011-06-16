@@ -223,13 +223,3 @@ bool ModelPosts::sortByDateDesc(Post *p1, Post *p2)
 {
 	return (p1->pubdate <= p2->pubdate) ? true : false;
 }
-
-
-void ModelPosts::updatePost(int post_id) {
-	beginResetModel();
-	if (currentSource->postsIndex.contains(post_id)) {
-		Post *post = currentSource->postsIndex[post_id];
-		int row = currentSource->posts.indexOf(post);
-	}
-	endResetModel();
-}
