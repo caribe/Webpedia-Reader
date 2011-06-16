@@ -26,12 +26,12 @@ SourceFrame::SourceFrame(MainWindow *parent) : QTreeView(parent)
 	filterMenu->addAction(filterNews);
 
 	QAction *filterImportant = new QAction(tr("Only Flagged and Liked posts"), filterActionGroup);
-	filterNews->setObjectName("filterImportant");
+	filterImportant->setObjectName("filterImportant");
 	filterImportant->setCheckable(true);
 	filterMenu->addAction(filterImportant);
 
 	QAction *filterAll = new QAction(tr("View all"), filterActionGroup);
-	filterNews->setObjectName("filterAll");
+	filterAll->setObjectName("filterAll");
 	filterAll->setCheckable(true);
 	filterMenu->addAction(filterAll);
 
@@ -101,8 +101,6 @@ void SourceFrame::contextMenuEvent(QContextMenuEvent *event) {
 			filterActionGroup->actions().at(2)->setChecked(true);
 			break;
 		}
-
-		filterNews->setChecked(true);
 
 		contextMenu->exec(event->globalPos());
 	}
@@ -181,6 +179,8 @@ void SourceFrame::filterChanged(QAction *action)
 
 	Source *source = static_cast<Source *>(indexList.at(0).internalPointer());
 
+	qDebug() << action->objectName();
+
 	if (action->objectName() == "filterNews") {
 		source->setFilter(Source::NewPosts);
 	} else if (action->objectName() == "filterImportant") {
@@ -189,5 +189,6 @@ void SourceFrame::filterChanged(QAction *action)
 		source->setFilter(Source::AllPosts);
 	}
 
+	emit activated(indexList.at(0));
 
 }

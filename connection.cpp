@@ -60,7 +60,9 @@ void Connection::sourceSelected(const QModelIndex & index)
 	mainWindow->splitter2->setCurrentIndex(1);
 	mainWindow->postsModel->setSource(source);
 	if (source->refreshNeeded()) {
-		sendRequest(QString("source/%1").arg(source->id));
+		QStringList filters;
+		filters << "news" << "important" << "all";
+		sendRequest(QString("source/%1,%2").arg(source->id).arg(filters[source->filter]));
 	}
 }
 
@@ -92,7 +94,6 @@ void Connection::renameFolder(Source *source)
 void Connection::sendAction(PostsArray &postsArray, Post::Status code)
 {
 	QStringList modes;
-
 	modes << "unread" << "read" << "flag" << "like" << "delete";
 
 	QStringList sources;

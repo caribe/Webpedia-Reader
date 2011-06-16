@@ -35,8 +35,10 @@ void ModelPosts::flush() {
 
 
 void ModelPosts::setSource(Source *source) {
-	currentSource = source;
-	reset();
+	if (source != currentSource) {
+		currentSource = source;
+		reset();
+	}
 }
 
 
