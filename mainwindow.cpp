@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
 	QIcon icon(":/resources/webpedia.svg");
 	setWindowIcon(icon);
@@ -60,9 +60,15 @@ MainWindow::MainWindow(QWidget *parent)
 	actionQuit->setObjectName("actionQuit");
 	actionQuit->setShortcut(QKeySequence::Quit);
 
-	actionShowBrowser = new QAction(QIcon(":/resources/application-browser.png"), tr("Show browser"), this);
-	actionShowBrowser->setObjectName("actionShowBrowser");
-	actionShowBrowser->setShortcut(Qt::CTRL + Qt::Key_B);
+	actionBrowserShow = new QAction(QIcon(":/resources/application-browser.png"), tr("Show browser"), this);
+	actionBrowserShow->setShortcut(Qt::CTRL + Qt::Key_B);
+
+	actionBrowserBack = new QAction(QIcon(":/resources/arrow-180.png"), tr("&Back"), this);
+	actionBrowserBack->setShortcut(Qt::ALT + Qt::Key_Left);
+
+	actionBrowserHome = new QAction(QIcon(":/resources/home.png"), tr("&Home"), this);
+	actionBrowserHome->setShortcut(Qt::CTRL + Qt::Key_H);
+
 
 	// Browser
 
@@ -112,8 +118,11 @@ MainWindow::MainWindow(QWidget *parent)
 	postsFrame->connect(actionPostCopy, SIGNAL(triggered()), SLOT(actionLinkCopy()));
 	postsFrame->connect(actionPostView, SIGNAL(triggered()), SLOT(openPost()));
 
+	connect(actionBrowserShow, SIGNAL(triggered()), SLOT(showBrowser()));
+	browserFrame->connect(actionBrowserBack, SIGNAL(triggered()), SLOT(browserBack()));
+	browserFrame->connect(actionBrowserHome, SIGNAL(triggered()), SLOT(browserHome()));
+
 	connection->connect(actionRefresh, SIGNAL(triggered()), SLOT(update()));
-	connect(actionShowBrowser, SIGNAL(triggered()), SLOT(showBrowser()));
 	connect(actionQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
 
 	// Menu bar
@@ -136,9 +145,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 	menuBar->addMenu(menuFile);
 
-	QMenu *menuView = new QMenu(tr("&View"));
+	QMenu *menuView = new QMenu(tr("&Browser"));
 
-	menuView->addAction(actionShowBrowser);
+	menuView->addAction(actionBrowserShow);
+	menuView->addAction(actionBrowserBack);
+	menuView->addAction(actionBrowserHome);
 
 	menuBar->addMenu(menuView);
 
@@ -217,13 +228,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 	toolbar->addSeparator();
 
-	QAction *tbBack = new QAction(QIcon(":/resources/arrow-180.png"), tr("&Back"), toolbar);
-	toolbar->addAction(tbBack);
-
-	QAction *tbHome = new QAction(QIcon(":/resources/home.png"), tr("&Home"), toolbar);
-	toolbar->addAction(tbHome);
+	toolbar->addAction(actionBrowserShow);
+	toolbar->addAction(actionBrowserBack);
+	toolbar->addAction(actionBrowserHome);
 
 	addToolBar(toolbar);
+
 
 	// Tray Icon
 

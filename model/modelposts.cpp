@@ -8,7 +8,7 @@ ModelPosts::ModelPosts(Source *database, QObject *parent) : QAbstractTableModel(
 	authorIcon = QIcon(":/resources/user.png");
 	statusIcons[Post::unread] = QIcon(":/resources/mail.png");
 	statusIcons[Post::read] = QIcon(":/resources/mail-open.png");
-	statusIcons[Post::liked] = QIcon(":/resources/star.png");
+	statusIcons[Post::liked] = QIcon(":/resources/heart.png");
 	statusIcons[Post::flagged] = QIcon(":/resources/flag.png");
 }
 

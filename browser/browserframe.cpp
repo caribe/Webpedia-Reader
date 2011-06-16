@@ -7,19 +7,6 @@ BrowserFrame::BrowserFrame(QWidget *parent) : QTabWidget(parent)
 }
 
 
-void BrowserFrame::browserHome()
-{
-	if (count() == 0) {
-		openLink(QUrl("http://webpedia.altervista.org/"), "Webpedia");
-	} else {
-		setTabText(currentIndex(), "Webpedia");
-		QWebView *browser = static_cast<QWebView *>(widget(currentIndex()));
-		browser->setUrl(QUrl("http://webpedia.altervista.org/"));
-	}
-}
-
-
-
 void BrowserFrame::openLink(QUrl url, QString title) {
 	// Set utm params
 	url.removeQueryItem("utm_source");
@@ -49,6 +36,27 @@ void BrowserFrame::browserLoaded(bool ok) {
 			}
 		}
 	}
+}
+
+
+void BrowserFrame::browserHome()
+{
+	QWebView *browser = static_cast<QWebView *>(currentWidget());
+
+	if (browser == 0) {
+		openLink(QUrl("http://webpedia.altervista.org/"), "Webpedia");
+	} else {
+		setTabText(currentIndex(), "Webpedia");
+		setTabIcon(currentIndex(), QIcon(":/resources/webpedia.svg"));
+		browser->setUrl(QUrl("http://webpedia.altervista.org/"));
+	}
+}
+
+
+void BrowserFrame::browserBack()
+{
+	QWebView *browser = static_cast<QWebView *>(currentWidget());
+	if (browser != 0) browser->back();
 }
 
 

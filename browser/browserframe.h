@@ -21,9 +21,10 @@ signals:
 
 public slots:
 	void openLink(QUrl url, QString title);
+	void browserHome();
+	void browserBack();
 
 private slots:
-	void browserHome();
 	void closeTab(int i);
 	void browserLoaded(bool ok);
 };
