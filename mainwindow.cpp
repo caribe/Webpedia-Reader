@@ -74,10 +74,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 	tree = new SourceFrame(this);
 	tree->setModel(sourcesModel);
-	connection->connect(tree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), SLOT(sourceSelected(QModelIndex, QModelIndex)));
-	connection->connect(tree, SIGNAL(addFolderSignal(Source*)), SLOT(addFolder(Source *)));
 	connection->connect(sourcesModel, SIGNAL(sourceMoved(Source*,Source*,int)), SLOT(moveFolder(Source*,Source*,int)));
 	connection->connect(sourcesModel, SIGNAL(sourceRenamed(Source*)), SLOT(renameFolder(Source*)));
+	connection->connect(tree, SIGNAL(activated(QModelIndex)), SLOT(sourceSelected(QModelIndex)));
+	connection->connect(tree, SIGNAL(addFolderSignal(Source*)), SLOT(addFolder(Source *)));
 	connection->connect(tree, SIGNAL(expandFolderSignal(Source *)), SLOT(folderExpand(Source *)));
 	connection->connect(tree, SIGNAL(collapseFolderSignal(Source *)), SLOT(folderCollapse(Source *)));
 

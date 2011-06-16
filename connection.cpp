@@ -54,31 +54,15 @@ void Connection::update()
 }
 
 
-void Connection::sourceSelected(const QModelIndex & current, const QModelIndex & previous)
+void Connection::sourceSelected(const QModelIndex & index)
 {
-	Source *source = static_cast<Source *>(current.internalPointer());
+	Source *source = static_cast<Source *>(index.internalPointer());
 	if (source->feed == 0) {
 		mainWindow->postsModel->setSource(source);
 	} else {
 		mainWindow->postsModel->currentSource = source;
 		mainWindow->splitter2->setCurrentIndex(1);
 		sendRequest(QString("source/%1").arg(source->id));
-	}
-}
-
-
-void Connection::postSelected(const QModelIndex & current, const QModelIndex & previous)
-{
-	ModelPosts *model = mainWindow->postsModel;
-
-	Post *item = model->getPost(current);
-
-	if (item) {
-		// mainWindow->post->setHtml("<html><body>"+item->body+"</body></html>");
-
-		if (item->status == Post::unread) {
-			sendRequest(QString("postread/%1").arg(item->id));
-		}
 	}
 }
 
