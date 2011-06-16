@@ -188,4 +188,6 @@ void SourceFrame::filterChanged(QAction *action)
 	} else if (action->objectName() == "filterAll") {
 		source->setFilter(Source::AllPosts);
 	}
+
+
 }
