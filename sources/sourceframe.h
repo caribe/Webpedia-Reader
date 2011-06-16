@@ -21,6 +21,7 @@ public:
 private:
 	MainWindow *mainWindow;
 	QMenu *contextMenu;
+	QActionGroup *filterActionGroup;
 	QAction *menuAdd;
 	QAction *menuAddFolder;
 	QAction *menuAddSeparator;
@@ -37,6 +38,7 @@ private slots:
 	void addFolderAction();
 	void folderExpand(const QModelIndex &index);
 	void folderCollapse(const QModelIndex &index);
+	void filterChanged(QAction*);
 
 public slots:
 	void menuDeleteAction();

@@ -12,7 +12,32 @@ SourceFrame::SourceFrame(MainWindow *parent) : QTreeView(parent)
 	setAcceptDrops(true);
 	setDropIndicatorShown(true);
 
+	// Menu
+
 	contextMenu = new QMenu(this);
+
+	QMenu *filterMenu = new QMenu("Filter", this);
+
+	filterActionGroup = new QActionGroup(this);
+
+	QAction *filterNews = new QAction(tr("Only Unread and Read posts"), filterActionGroup);
+	filterNews->setObjectName("filterNews");
+	filterNews->setCheckable(true);
+	filterMenu->addAction(filterNews);
+
+	QAction *filterImportant = new QAction(tr("Only Flagged and Liked posts"), filterActionGroup);
+	filterNews->setObjectName("filterImportant");
+	filterImportant->setCheckable(true);
+	filterMenu->addAction(filterImportant);
+
+	QAction *filterAll = new QAction(tr("View all"), filterActionGroup);
+	filterNews->setObjectName("filterAll");
+	filterAll->setCheckable(true);
+	filterMenu->addAction(filterAll);
+
+	connect(filterActionGroup, SIGNAL(triggered(QAction*)), SLOT(filterChanged(QAction*)));
+
+	contextMenu->addMenu(filterMenu);
 
 	QAction *menuRename = new QAction(QIcon(":/resources/pencil.png"), tr("&Rename"), this);
 	connect(menuRename, SIGNAL(triggered()), SLOT(renameAction()));
@@ -51,6 +76,8 @@ void SourceFrame::contextMenuEvent(QContextMenuEvent *event) {
 	if (indexList.length() == 1) {
 		Source *source = static_cast<Source *>(indexList.at(0).internalPointer());
 
+		// Actions
+
 		if (source->feed == 0) {
 			menuAddSeparator->setVisible(true);
 			menuAdd->setVisible(true);
@@ -60,6 +87,22 @@ void SourceFrame::contextMenuEvent(QContextMenuEvent *event) {
 			menuAdd->setVisible(false);
 			menuAddFolder->setVisible(false);
 		}
+
+		// Filters
+
+		switch (source->filter) {
+		case Source::NewPosts:
+			filterActionGroup->actions().at(0)->setChecked(true);
+			break;
+		case Source::ImportantPosts:
+			filterActionGroup->actions().at(1)->setChecked(true);
+			break;
+		case Source::AllPosts:
+			filterActionGroup->actions().at(2)->setChecked(true);
+			break;
+		}
+
+		filterNews->setChecked(true);
 
 		contextMenu->exec(event->globalPos());
 	}
@@ -128,4 +171,21 @@ void SourceFrame::folderExpand(const QModelIndex &index)
 void SourceFrame::folderCollapse(const QModelIndex &index)
 {
 	if (autoExpandFlag == false) emit collapseFolderSignal(static_cast<Source *>(index.internalPointer()));
+}
+
+
+void SourceFrame::filterChanged(QAction *action)
+{
+	QModelIndexList indexList = selectionModel()->selectedRows();
+	if (indexList.length() != 1) return;
+
+	Source *source = static_cast<Source *>(indexList.at(0).internalPointer());
+
+	if (action->objectName() == "filterNews") {
+		source->setFilter(Source::NewPosts);
+	} else if (action->objectName() == "filterImportant") {
+		source->setFilter(Source::ImportantPosts);
+	} else if (action->objectName() == "filterAll") {
+		source->setFilter(Source::AllPosts);
+	}
 }

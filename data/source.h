@@ -14,7 +14,15 @@ typedef QList<Post *> PostsArray;
 class Source : public QObject
 {
     Q_OBJECT
+
 public:
+
+	enum Filters {
+		NewPosts,
+		ImportantPosts,
+		AllPosts
+	};
+
     explicit Source(QObject *parent = 0);
 	int id, feed, row, unread;
 	bool expanded;
@@ -27,8 +35,11 @@ public:
 	QList<Post *> posts;
 	QHash<int, Post *> postsIndex;
 
+	Filters filter;
+
 	void updateDateTime();
 	bool refreshNeeded();
+	void setFilter(Filters);
 
 private:
 	QDateTime dateTime;
