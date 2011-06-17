@@ -48,6 +48,7 @@ public slots:
 	void update();
 	void finish(QNetworkReply *reply);
 	void sourceSelected(const QModelIndex & index);
+	void sourceSelected(const QModelIndex & index, const QModelIndex & previous);
 	void addSource(QString url);
 	void sourceList();
 	void sendAction(PostsArray &postsArray, Post::Status code);

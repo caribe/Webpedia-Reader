@@ -54,6 +54,12 @@ void Connection::update()
 }
 
 
+void Connection::sourceSelected(const QModelIndex & index, const QModelIndex & previous)
+{
+	sourceSelected(index);
+}
+
+
 void Connection::sourceSelected(const QModelIndex & index)
 {
 	Source *source = static_cast<Source *>(index.internalPointer());

@@ -34,23 +34,6 @@ void PostsList::contextMenuEvent(QContextMenuEvent *event) {
 	QModelIndexList indexList = selectionModel()->selectedRows();
 
 	if (indexList.length() > 0) {
-		/*
-		Post *post = (Post *)indexList.at(0).internalPointer();
-
-		if (post->status == Post::read || post->status == Post::unread) {
-			menuRead->setVisible(true);
-			menuFlag->setVisible(true);
-			menuLike->setVisible(true);
-		} else if (post->status == Post::flagged) {
-			menuRead->setVisible(false);
-			menuFlag->setVisible(false);
-			menuLike->setVisible(true);
-		} else if (post->status == Post::liked) {
-			menuRead->setVisible(false);
-			menuFlag->setVisible(true);
-			menuLike->setVisible(false);
-		}
-*/
 		contextMenu->exec(event->globalPos());
 	}
 }

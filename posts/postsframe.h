@@ -35,7 +35,7 @@ signals:
 	void linkClicked(QUrl link, QString title);
 
 public slots:
-	void postSelected(const QModelIndex & index);
+	void postSelected(const QModelIndex & current, const QModelIndex & previous);
 	void actionPost();
 	void actionLinkCopy();
 

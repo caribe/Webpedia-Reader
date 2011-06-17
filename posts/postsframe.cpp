@@ -11,8 +11,7 @@ PostsFrame::PostsFrame(ModelPosts *postsModel, MainWindow *parent) : QSplitter(p
 
 	addWidget(list);
 
-	connect(list, SIGNAL(clicked(QModelIndex)), SLOT(postSelected(QModelIndex)));
-	connect(list, SIGNAL(activated(QModelIndex)), SLOT(postSelected(QModelIndex)));
+	connect(list->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(postSelected(QModelIndex,QModelIndex)));
 
 	// *** Viewer
 
@@ -77,7 +76,7 @@ void PostsFrame::actionPost() {
 
 
 
-void PostsFrame::postSelected(const QModelIndex & index)
+void PostsFrame::postSelected(const QModelIndex & index, const QModelIndex & previous)
 {
 	Post *post = static_cast<Post *>(index.internalPointer());
 	viewerTitle->setText(QString("<h3>%1</h3>").arg(post->title));
