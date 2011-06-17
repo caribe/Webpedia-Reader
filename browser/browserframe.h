@@ -23,9 +23,9 @@ public slots:
 	void openLink(QUrl url, QString title);
 	void browserHome();
 	void browserBack();
+	void closeTab(int i = -1);
 
 private slots:
-	void closeTab(int i);
 	void browserLoaded(bool ok);
 };
 

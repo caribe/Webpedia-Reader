@@ -33,5 +33,6 @@
         <file>resources/magnifier.png</file>
         <file>resources/plus.png</file>
         <file>resources/application-browser.png</file>
+        <file>resources/funnel.png</file>
     </qresource>
 </RCC>

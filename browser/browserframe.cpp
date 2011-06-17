@@ -61,6 +61,8 @@ void BrowserFrame::browserBack()
 
 
 void BrowserFrame::closeTab(int i) {
+	if (i == -1) i = currentIndex();
+
 	removeTab(i);
 	if (count() == 0) emit hideSignal();
 }

@@ -64,11 +64,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	actionBrowserShow->setShortcut(Qt::CTRL + Qt::Key_B);
 
 	actionBrowserBack = new QAction(QIcon(":/resources/arrow-180.png"), tr("&Back"), this);
-	actionBrowserBack->setShortcut(Qt::ALT + Qt::Key_Left);
+	actionBrowserBack->setShortcut(QKeySequence::Back);
 
 	actionBrowserHome = new QAction(QIcon(":/resources/home.png"), tr("&Home"), this);
 	actionBrowserHome->setShortcut(Qt::CTRL + Qt::Key_H);
 
+	actionBrowserCloseTab = new QAction(tr("Close Tab"), this);
+	actionBrowserCloseTab->setShortcut(QKeySequence::Close);
 
 	// Browser
 
@@ -124,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(actionBrowserShow, SIGNAL(triggered()), SLOT(showBrowser()));
 	browserFrame->connect(actionBrowserBack, SIGNAL(triggered()), SLOT(browserBack()));
 	browserFrame->connect(actionBrowserHome, SIGNAL(triggered()), SLOT(browserHome()));
+	browserFrame->connect(actionBrowserCloseTab, SIGNAL(triggered()), SLOT(closeTab()));
 
 	connection->connect(actionRefresh, SIGNAL(triggered()), SLOT(update()));
 	connect(actionQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
@@ -153,6 +156,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	menuView->addAction(actionBrowserShow);
 	menuView->addAction(actionBrowserBack);
 	menuView->addAction(actionBrowserHome);
+	menuView->addAction(actionBrowserCloseTab);
 
 	menuBar->addMenu(menuView);
 

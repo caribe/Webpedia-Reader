@@ -17,6 +17,7 @@ SourceFrame::SourceFrame(MainWindow *parent) : QTreeView(parent)
 	contextMenu = new QMenu(this);
 
 	QMenu *filterMenu = new QMenu("Filter", this);
+	filterMenu->setIcon(QIcon(":/resources/funnel.png"));
 
 	filterActionGroup = new QActionGroup(this);
 
