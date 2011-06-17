@@ -11,6 +11,7 @@ PostsFrame::PostsFrame(ModelPosts *postsModel, MainWindow *parent) : QSplitter(p
 
 	addWidget(list);
 
+	connect(list, SIGNAL(clicked(QModelIndex)), SLOT(postSelected(QModelIndex)));
 	connect(list, SIGNAL(activated(QModelIndex)), SLOT(postSelected(QModelIndex)));
 
 	// *** Viewer
