@@ -31,6 +31,8 @@ void Connection::sendRequest(QString action, ParamHash &data, bool noAuth)
 
 void Connection::sendRequest(QString action, bool noAuth)
 {
+	qDebug() << mainWindow->baseUrl+"reader."+action+"/";
+
 	QNetworkRequest request(QUrl(mainWindow->baseUrl+"reader."+action+"/"));
 	if (noAuth == false) {
 		request.setRawHeader("Authorization", "Basic "+QString(mainWindow->user+":"+mainWindow->token).toLocal8Bit().toBase64());

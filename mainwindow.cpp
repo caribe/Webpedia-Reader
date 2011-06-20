@@ -460,6 +460,7 @@ void MainWindow::addSourceByList()
 	if (wizardList->exec() == QDialog::Accepted) {
 		connection->sourceAdd(wizardList->getSource());
 	}
+
 	delete wizardList;
 }
 
