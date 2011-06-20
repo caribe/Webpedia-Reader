@@ -91,7 +91,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connection->connect(tree, SIGNAL(addFolderSignal(Source*)), SLOT(addFolder(Source *)));
 	connection->connect(tree, SIGNAL(expandFolderSignal(Source *)), SLOT(folderExpand(Source *)));
 	connection->connect(tree, SIGNAL(collapseFolderSignal(Source *)), SLOT(folderCollapse(Source *)));
-	connect(sourcesModel, SIGNAL(modelReset()), tree, SLOT(resizeColumnsToContents()));
 
 	// Posts
 
@@ -235,9 +234,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	toolbar->addSeparator();
 
-	toolbar->addAction(actionBrowserShow);
 	toolbar->addAction(actionBrowserBack);
 	toolbar->addAction(actionBrowserHome);
+	toolbar->addAction(actionBrowserShow);
 
 	addToolBar(toolbar);
 
@@ -283,6 +282,13 @@ void MainWindow::init() {
 		foreach (QVariant size, settings.value("state/hsplitter").toList())
 			hSizeList << size.toInt();
 		splitter1->setSizes(hSizeList);
+	}
+
+	if (settings.contains("state/vsplitter")) {
+		QList<int> vSizeList;
+		foreach (QVariant size, settings.value("state/vsplitter").toList())
+			vSizeList << size.toInt();
+		postsFrame->setSizes(vSizeList);
 	}
 
 	if (settings.contains("state/sourcecols")) {
@@ -426,6 +432,10 @@ void MainWindow::onBeforeQuit() {
 	for (int i = 0; i < tree->header()->count(); i++)
 		sourceSizes << tree->header()->sectionSize(i);
 	settings.setValue("state/sourcecols", sourceSizes);
+
+	QVariantList postSizes;
+	foreach (int size, postsFrame->sizes()) postSizes << size;
+	settings.setValue("state/vsplitter", postSizes);
 
 	qApp->quit();
 }
