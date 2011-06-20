@@ -21,6 +21,8 @@ WizardList::WizardList(QWidget *parent, QStandardItemModel *model) : QDialog(par
 	listTable->setShowGrid(false);
 	listTable->setStyleSheet("alternate-background-color: #ECF5D3");
 
+	connect(model, SIGNAL(modelReset()), listTable, SLOT(resizeColumnsToContents()));
+
 	// Button Box
 
 	QPushButton *acceptButton = new QPushButton(QIcon(":/resources/plus.png"), tr("Add source"));
@@ -139,19 +141,19 @@ void WizardList::buttonClicked(int id) {
 		stackedContent->setCurrentIndex(0);
 		switch (id) {
 		case 1:
-			emit listRequest("list");
+			emit listRequest("sourcelist");
 			break;
 		case 2:
-			emit listRequest("list/liked");
+			emit listRequest("sourcelist/liked");
 			break;
 		case 3:
-			emit listRequest("list/recent");
+			emit listRequest("sourcelist/recent");
 			break;
 		case 4:
-			emit listRequest("list/updated");
+			emit listRequest("sourcelist/updated");
 			break;
 		case 5:
-			emit listRequest("list/specials");
+			emit listRequest("sourcelist/specials");
 			break;
 		}
 	}

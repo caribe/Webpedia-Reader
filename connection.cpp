@@ -199,7 +199,7 @@ void Connection::finish(QNetworkReply *reply)
 			} else if (rootN.toElement().tagName() == "sources-list") {
 
 				QStringList headerLabels;
-				headerLabels << tr("Source") << tr("Followers");
+				headerLabels << tr("Source") << tr("Followers") << tr("Posts");
 
 				sourcesListModel->clear();
 				sourcesListModel->setHorizontalHeaderLabels(headerLabels);
@@ -210,12 +210,18 @@ void Connection::finish(QNetworkReply *reply)
 					item->setEditable(false);
 					item->setData(sourceE.attribute("id").toInt(), Qt::UserRole + 1);
 
-					QStandardItem *follower = new QStandardItem(sourceE.attribute("follower"));
-					follower->setEditable(false);
-					follower->setTextAlignment(Qt::AlignRight);
+					QStandardItem *followers = new QStandardItem();
+					followers->setData(sourceE.attribute("followers").toInt(), Qt::DisplayRole);
+					followers->setEditable(false);
+					followers->setTextAlignment(Qt::AlignRight);
+
+					QStandardItem *posts = new QStandardItem();
+					posts->setData(sourceE.attribute("posts").toInt(), Qt::DisplayRole);
+					posts->setEditable(false);
+					posts->setTextAlignment(Qt::AlignRight);
 
 					QList<QStandardItem *> row;
-					row << item << follower;
+					row << item << followers << posts;
 
 					sourcesListModel->appendRow(row);
 				}

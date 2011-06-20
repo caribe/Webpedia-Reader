@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	setWindowTitle(tr("Webpedia Reader"));
 
-	baseUrl = QString("http://webpedia.altervista.org/");
+	baseUrl = QString("http://webpedia.slakko.org/");
 
 	logged = false;
 
@@ -87,9 +87,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connection->connect(sourcesModel, SIGNAL(sourceMoved(Source*,Source*,int)), SLOT(moveFolder(Source*,Source*,int)));
 	connection->connect(sourcesModel, SIGNAL(sourceRenamed(Source*)), SLOT(renameFolder(Source*)));
 	connection->connect(tree->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(sourceSelected(QModelIndex,QModelIndex)));
+	connection->connect(tree, SIGNAL(clicked(QModelIndex)), SLOT(sourceSelected(QModelIndex)));
 	connection->connect(tree, SIGNAL(addFolderSignal(Source*)), SLOT(addFolder(Source *)));
 	connection->connect(tree, SIGNAL(expandFolderSignal(Source *)), SLOT(folderExpand(Source *)));
 	connection->connect(tree, SIGNAL(collapseFolderSignal(Source *)), SLOT(folderCollapse(Source *)));
+	connect(sourcesModel, SIGNAL(modelReset()), tree, SLOT(resizeColumnsToContents()));
 
 	// Posts
 
@@ -148,7 +150,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	menuFile->addAction(actionQuit);
 
-	menuBar->addMenu(menuFile);
 
 	QMenu *menuView = new QMenu(tr("&Browser"));
 
@@ -156,8 +157,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	menuView->addAction(actionBrowserBack);
 	menuView->addAction(actionBrowserHome);
 	menuView->addAction(actionBrowserCloseTab);
-
-	menuBar->addMenu(menuView);
 
 
 	QMenu *menuSources = new QMenu(tr("&Source"));
@@ -178,11 +177,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(menuSourcesAddFolder, SIGNAL(triggered()), SLOT(addFolder()));
 	menuSources->addAction(menuSourcesAddFolder);
 
-	menuBar->addMenu(menuSources);
-
 
 	QMenu *menuPosts = new QMenu(tr("&Post"));
-	menuBar->addMenu(menuPosts);
 
 	menuPosts->addAction(actionPostView);
 	menuPosts->addSeparator();
@@ -196,7 +192,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 
 	QMenu *menuSettings = new QMenu(tr("Se&ttings"));
-	menuBar->addMenu(menuSettings);
 
 	QAction *menuSettingsOptions = new QAction(QIcon(":/resources/wrench.png"), tr("&Options"), menuSettings);
 	connect(menuSettingsOptions, SIGNAL(triggered()), SLOT(optionsDialog()));
@@ -213,6 +208,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(actionHelpAboutQt, SIGNAL(triggered()), SLOT(menuHelpAboutQt()));
 	menuHelp->addAction(actionHelpAboutQt);
 
+
+	menuBar->addMenu(menuFile);
+	menuBar->addMenu(menuSources);
+	menuBar->addMenu(menuPosts);
+	menuBar->addMenu(menuView);
+	menuBar->addMenu(menuSettings);
 	menuBar->addMenu(menuHelp);
 
 	this->setMenuBar(menuBar);
