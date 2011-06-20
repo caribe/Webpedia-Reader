@@ -98,7 +98,7 @@ QVariant ModelPosts::headerData(int section, Qt::Orientation orientation, int ro
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
 		switch (section) {
 		case 0:
-			return "";
+			return QVariant();
 		case 1:
 			return tr("Title");
 		case 2:

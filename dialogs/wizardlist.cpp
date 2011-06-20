@@ -21,8 +21,6 @@ WizardList::WizardList(QWidget *parent, QStandardItemModel *model) : QDialog(par
 	listTable->setShowGrid(false);
 	listTable->setStyleSheet("alternate-background-color: #ECF5D3");
 
-	connect(model, SIGNAL(modelReset()), listTable, SLOT(resizeColumnsToContents()));
-
 	// Button Box
 
 	QPushButton *acceptButton = new QPushButton(QIcon(":/resources/plus.png"), tr("Add source"));
