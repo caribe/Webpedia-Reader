@@ -27,6 +27,7 @@ PostsList::PostsList(PostsFrame *parent) : QTableView(parent) {
 	contextMenu->addAction(mainWindow->actionPostDelete);
 	contextMenu->addSeparator();
 	contextMenu->addAction(mainWindow->actionPostView);
+	contextMenu->addAction(mainWindow->actionPostExternal);
 
 }
 

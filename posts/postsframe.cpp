@@ -105,7 +105,11 @@ void PostsFrame::openPost()
 			emit action(postsList, Post::read);
 		}
 
-		emit linkClicked(QUrl(post->link), post->title);
+		if (QObject::sender()->objectName() == "actionPostExternal") {
+			QDesktopServices::openUrl(QUrl(post->link));
+		} else {
+			emit linkClicked(QUrl(post->link), post->title);
+		}
 	}
 }
 

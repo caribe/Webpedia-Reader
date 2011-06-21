@@ -11,6 +11,7 @@
 #include <QWebView>
 #include <QStackedWidget>
 #include <QWidgetAction>
+#include <QDesktopServices>
 
 class PostsFrame;
 

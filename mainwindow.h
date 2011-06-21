@@ -72,7 +72,7 @@ public:
 
 	bool logged;
 
-	QAction *actionPostRead, *actionPostUnread, *actionPostFlag, *actionPostLike, *actionPostDelete, *actionPostView, *actionPostCopy;
+	QAction *actionPostRead, *actionPostUnread, *actionPostFlag, *actionPostLike, *actionPostDelete, *actionPostView, *actionPostCopy, *actionPostExternal;
 	QAction *actionRefresh, *actionQuit;
 	QAction *actionBrowserShow, *actionBrowserBack, *actionBrowserHome, *actionBrowserCloseTab;
 

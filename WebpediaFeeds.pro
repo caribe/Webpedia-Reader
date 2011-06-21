@@ -78,4 +78,6 @@ OTHER_FILES += \
     resources/clock.png \
     resources/plus.png \
     resources/application-browser.png \
-    resources/funnel.png
+    resources/funnel.png \
+    resources/external.png \
+    resources/application-list.png

@@ -14,12 +14,9 @@
         <file>resources/user.png</file>
         <file>resources/mail-open.png</file>
         <file>resources/mail.png</file>
-        <file>resources/webpedia.png</file>
         <file>resources/pencil.png</file>
         <file>resources/folder--plus.png</file>
         <file>resources/clipboard-paste.png</file>
-        <file>resources/star-empty.png</file>
-        <file>resources/flag-white.png</file>
         <file>resources/flag.png</file>
         <file>resources/plug-connect.png</file>
         <file>resources/plug-disconnect.png</file>
@@ -34,5 +31,7 @@
         <file>resources/plus.png</file>
         <file>resources/application-browser.png</file>
         <file>resources/funnel.png</file>
+        <file>resources/external.png</file>
+        <file>resources/application-list.png</file>
     </qresource>
 </RCC>

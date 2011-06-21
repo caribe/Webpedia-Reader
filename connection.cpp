@@ -18,6 +18,8 @@ void Connection::login(QString username, QString password)
 
 void Connection::sendRequest(QString action, ParamHash &data, bool noAuth)
 {
+	qDebug() << "POST: "+mainWindow->baseUrl+"reader."+action+"/";
+
 	QNetworkRequest request(QUrl(mainWindow->baseUrl+"reader."+action+"/"));
 	if (noAuth == false) {
 		request.setRawHeader("Authorization", "Basic "+QString(mainWindow->user+":"+mainWindow->token).toLocal8Bit().toBase64());
@@ -31,7 +33,7 @@ void Connection::sendRequest(QString action, ParamHash &data, bool noAuth)
 
 void Connection::sendRequest(QString action, bool noAuth)
 {
-	qDebug() << mainWindow->baseUrl+"reader."+action+"/";
+	qDebug() << "GET: "+mainWindow->baseUrl+"reader."+action+"/";
 
 	QNetworkRequest request(QUrl(mainWindow->baseUrl+"reader."+action+"/"));
 	if (noAuth == false) {
@@ -109,7 +111,10 @@ void Connection::sendAction(PostsArray &postsArray, Post::Status code)
 		sources << QString::number(post->id);
 	}
 
-	sendRequest(QString("post%1/%2").arg(modes[code]).arg(sources.join(",")));
+	ParamHash data;
+	data["posts"] = sources.join(",");
+
+	sendRequest(QString("post%1").arg(modes[code]), data);
 }
 
 

@@ -29,6 +29,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	actionPostView->setObjectName("actionPostView");
 	actionPostView->setShortcut(Qt::Key_V);
 
+	actionPostExternal = new QAction(QIcon(":/resources/external.png"), tr("Open in default browser"), this);
+	actionPostExternal->setObjectName("actionPostExternal");
+	actionPostExternal->setShortcut(Qt::Key_X);
+
 	actionPostCopy = new QAction(QIcon(":/resources/clipboard-paste.png"), tr("Copy post address"), this);
 	actionPostCopy->setObjectName("actionPostCopy");
 
@@ -122,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	postsFrame->connect(actionPostDelete, SIGNAL(triggered()), SLOT(actionPost()));
 	postsFrame->connect(actionPostCopy, SIGNAL(triggered()), SLOT(actionLinkCopy()));
 	postsFrame->connect(actionPostView, SIGNAL(triggered()), SLOT(openPost()));
+	postsFrame->connect(actionPostExternal, SIGNAL(triggered()), SLOT(openPost()));
 
 	connect(actionBrowserShow, SIGNAL(triggered()), SLOT(showBrowser()));
 	browserFrame->connect(actionBrowserBack, SIGNAL(triggered()), SLOT(browserBack()));
@@ -179,16 +184,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	QMenu *menuPosts = new QMenu(tr("&Post"));
 
-	menuPosts->addAction(actionPostView);
-	menuPosts->addSeparator();
 	menuPosts->addAction(actionPostRead);
 	menuPosts->addAction(actionPostUnread);
 	menuPosts->addAction(actionPostFlag);
 	menuPosts->addAction(actionPostLike);
 	menuPosts->addAction(actionPostDelete);
 	menuPosts->addSeparator();
+	menuPosts->addAction(actionPostView);
+	menuPosts->addAction(actionPostExternal);
+	menuPosts->addSeparator();
 	menuPosts->addAction(actionPostCopy);
-
 
 	QMenu *menuSettings = new QMenu(tr("Se&ttings"));
 
