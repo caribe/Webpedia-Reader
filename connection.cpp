@@ -284,8 +284,15 @@ void Connection::finish(QNetworkReply *reply)
 				}
 
 				postsModel->flush();
+
 				if (selection.length() > 0) {
-					mainWindow->postsFrame->list->selectRow(selection[0].row());
+					foreach (QModelIndex row, selection) {
+						if (row.row() < postsModel->rowCount()) {
+							mainWindow->postsFrame->list->selectRow(row.row());
+						} else {
+							mainWindow->postsFrame->list->selectRow(postsModel->rowCount() - 1);
+						}
+					}
 				}
 
 			} else if (rootN.toElement().tagName() == "login") {
