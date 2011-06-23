@@ -114,7 +114,7 @@ void Connection::sendAction(PostsArray &postsArray, Post::Status code)
 	ParamHash data;
 	data["posts"] = sources.join(",");
 
-	sendRequest(QString("post%1").arg(modes[code]), data);
+	sendRequest(QString("postmod/%1").arg(modes[code]), data);
 }
 
 
