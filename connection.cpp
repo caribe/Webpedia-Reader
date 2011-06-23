@@ -7,23 +7,24 @@ Connection::Connection(MainWindow *parent) : QNetworkAccessManager(parent)
 }
 
 
-void Connection::login(QString username, QString password)
+
+void Connection::sendAuthRequest(QString action, ParamHash &data)
 {
-	ParamHash data;
-	data["username"] = username;
-	data["password"] = password;
-	sendRequest("login", data);
+	qDebug() << "AUTH: "+mainWindow->baseUrl+"reader."+action+"/";
+	mainWindow->setStatus(tr("Connection"), true);
+
+	QNetworkRequest request(QUrl(mainWindow->baseUrl+"reader."+action+"/"));
+	post(request, postDataEncoding(data));
 }
 
 
-void Connection::sendRequest(QString action, ParamHash &data, bool noAuth)
+
+void Connection::sendPostRequest(QString action, ParamHash &data)
 {
 	qDebug() << "POST: "+mainWindow->baseUrl+"reader."+action+"/";
 
 	QNetworkRequest request(QUrl(mainWindow->baseUrl+"reader."+action+"/"));
-	if (noAuth == false) {
-		request.setRawHeader("Authorization", "Basic "+QString(mainWindow->user+":"+mainWindow->token).toLocal8Bit().toBase64());
-	}
+	request.setRawHeader("Authorization", "Basic "+QString(mainWindow->user+":"+mainWindow->token).toLocal8Bit().toBase64());
 
 	mainWindow->setStatus(tr("Connection"), true);
 
@@ -31,14 +32,12 @@ void Connection::sendRequest(QString action, ParamHash &data, bool noAuth)
 }
 
 
-void Connection::sendRequest(QString action, bool noAuth)
+void Connection::sendGetRequest(QString action)
 {
 	qDebug() << "GET: "+mainWindow->baseUrl+"reader."+action+"/";
 
 	QNetworkRequest request(QUrl(mainWindow->baseUrl+"reader."+action+"/"));
-	if (noAuth == false) {
-		request.setRawHeader("Authorization", "Basic "+QString(mainWindow->user+":"+mainWindow->token).toLocal8Bit().toBase64());
-	}
+	request.setRawHeader("Authorization", "Basic "+QString(mainWindow->user+":"+mainWindow->token).toLocal8Bit().toBase64());
 
 	mainWindow->setStatus(tr("Connection"), true);
 
@@ -46,15 +45,22 @@ void Connection::sendRequest(QString action, bool noAuth)
 }
 
 
-void Connection::sendRequest(QString action)
+void Connection::sendDeleteRequest(QString action)
 {
-	sendRequest(action, false);
+	qDebug() << "DELETE: "+mainWindow->baseUrl+"reader."+action+"/";
+
+	QNetworkRequest request(QUrl(mainWindow->baseUrl+"reader."+action+"/"));
+	request.setRawHeader("Authorization", "Basic "+QString(mainWindow->user+":"+mainWindow->token).toLocal8Bit().toBase64());
+
+	mainWindow->setStatus(tr("Connection"), true);
+
+	deleteResource(request);
 }
 
 
 void Connection::update()
 {
-	if (mainWindow->logged == true) sendRequest("sources");
+	if (mainWindow->logged == true) sendGetRequest("sources.show");
 }
 
 
@@ -72,7 +78,7 @@ void Connection::sourceSelected(const QModelIndex & index)
 	if (source->refreshNeeded()) {
 		QStringList filters;
 		filters << "news" << "important" << "all";
-		sendRequest(QString("source/%1,%2").arg(source->id).arg(filters[source->filter]));
+		sendGetRequest(QString("source.posts/%1,%2").arg(source->id).arg(filters[source->filter]));
 	}
 }
 
@@ -82,7 +88,10 @@ void Connection::addFolder(Source *parentSource)
 	int source_id = 0;
 	if (parentSource) source_id = parentSource->id;
 
-	sendRequest(QString("folderadd/%1").arg(source_id));
+	ParamHash data;
+	data["parent"] = source_id;
+
+	sendPostRequest(QString("folder.create"), data);
 }
 
 
@@ -91,13 +100,32 @@ void Connection::moveFolder(Source *source, Source *parentSource, int row)
 	int parent_id = 0;
 	if (parentSource) parent_id = parentSource->id;
 
-	sendRequest(QString("sourcemove/%1,%2,%3").arg(source->id).arg(parent_id).arg(row));
+	ParamHash data;
+	data["source"] = QString::number(source->id);
+	data["parent"] = QString::number(parent_id);
+	data["position"] = QString::number(row);
+
+	if (source->feed == 0) {
+		sendPostRequest(QString("folder.move"), data);
+	} else {
+		sendPostRequest(QString("source.move"), data);
+	}
 }
 
 
 void Connection::renameFolder(Source *source)
 {
-	sendRequest(QString("sourcerename/%1,%2").arg(source->id).arg(source->title));
+	ParamHash data;
+	data["source"] = QString::number(source->id);
+	data["name"] = source->title;
+
+	qDebug() << source->id;
+
+	if (source->feed == 0) {
+		sendPostRequest(QString("folder.rename"), data);
+	} else {
+		sendPostRequest(QString("source.rename"), data);
+	}
 }
 
 
@@ -113,14 +141,15 @@ void Connection::sendAction(PostsArray &postsArray, Post::Status code)
 
 	ParamHash data;
 	data["posts"] = sources.join(",");
+	data["state"] = modes[code];
 
-	sendRequest(QString("postmod/%1").arg(modes[code]), data);
+	sendPostRequest(QString("post.modify"), data);
 }
 
 
 void Connection::sourceList()
 {
-	sendRequest("list");
+	sendGetRequest("source.list");
 }
 
 
@@ -129,28 +158,39 @@ void Connection::addSource(QString url)
 	QHash<QString, QString> data;
 	data.insert("url", url);
 
-	sendRequest("sourceadd", data);
+	sendPostRequest("source.add", data);
 }
 
 
 void Connection::sourceAdd(int source)
 {
-	sendRequest(QString("sourceadd/%1").arg(source));
+	ParamHash data;
+	data["source"] = QString::number(source);
+
+	sendPostRequest(QString("source.follow"), data);
 }
 
 
 void Connection::sourceDel(Source *source)
 {
-	sendRequest(QString("sourcedel/%1").arg(source->id));
+	if (source->feed == 0) {
+		sendDeleteRequest(QString("folder.destroy/%1").arg(source->id));
+	} else {
+		sendDeleteRequest(QString("source.ignore/%1").arg(source->id));
+	}
 }
 
 
 void Connection::folderExpand(Source *source) {
-	sendRequest(QString("sourceexpand/%1").arg(source->id));
+	ParamHash data;
+	data["source"] = QString::number(source->id);
+	sendPostRequest(QString("folder.expand"), data);
 }
 
 void Connection::folderCollapse(Source *source) {
-	sendRequest(QString("sourcecollapse/%1").arg(source->id));
+	ParamHash data;
+	data["source"] = QString::number(source->id);
+	sendPostRequest(QString("folder.collapse"), data);
 }
 
 
@@ -158,6 +198,11 @@ void Connection::folderCollapse(Source *source) {
 
 void Connection::finish(QNetworkReply *reply)
 {
+	if (reply->error() != QNetworkReply::NoError) {
+		QMessageBox::critical(mainWindow, "Errore", reply->errorString());
+		return;
+	}
+
 	QDomDocument *xml = new QDomDocument();
 	xml->setContent(reply->readAll());
 

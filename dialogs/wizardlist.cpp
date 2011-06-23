@@ -159,6 +159,6 @@ void WizardList::buttonClicked(int id) {
 
 
 void WizardList::searchSubmitted() {
-	emit listRequest("sourcesearch/"+searchLineEdit->text());
+	emit listRequest("sources.search/"+searchLineEdit->text());
 	stackedContent->setCurrentIndex(0);
 }

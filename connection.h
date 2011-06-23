@@ -29,11 +29,12 @@ class Connection : public QNetworkAccessManager
 
 public:
 	Connection(MainWindow *parent = 0);
-	void login(QString username, QString password);
 	void sourceAdd(int source);
 	void sourceDel(Source *source);
 
 	typedef QHash<QString, QString> ParamHash;
+
+	void sendAuthRequest(QString action, ParamHash &data);
 
 private:
 	MainWindow *mainWindow;
@@ -41,8 +42,6 @@ private:
 	QByteArray postDataEncoding(ParamHash);
 	Post::Status stringToStatus(QString status);
 
-	void sendRequest(QString action, ParamHash &data, bool noAuth = false);
-	void sendRequest(QString action, bool noAuth);
 
 public slots:
 	void update();
@@ -57,7 +56,9 @@ public slots:
 	void renameFolder(Source *);
 	void folderExpand(Source *);
 	void folderCollapse(Source *);
-	void sendRequest(QString action);
+	void sendGetRequest(QString action);
+	void sendDeleteRequest(QString action);
+	void sendPostRequest(QString action, ParamHash &data);
 };
 
 #endif // UPDATER_H

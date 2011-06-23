@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	setWindowTitle(tr("Webpedia Reader"));
 
-	baseUrl = QString("http://webpedia.altervista.org/");
+	baseUrl = QString("http://webpedia.slakko.org/");
 
 	logged = false;
 
@@ -365,7 +365,11 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 void MainWindow::userConnect() {
 	Login *login = new Login();
 	if (login->exec() == QDialog::Accepted) {
-		connection->login(login->username->text(), login->password->text());
+		Connection::ParamHash data;
+		data["username"] = login->username->text();
+		data["password"] = login->password->text();
+
+		connection->sendAuthRequest("account.login", data);
 	}
 }
 
@@ -459,8 +463,8 @@ void MainWindow::addSourceByUrl()
 void MainWindow::addSourceByList()
 {
 	WizardList *wizardList = new WizardList(this, sourcesListModel);
-	connection->connect(wizardList, SIGNAL(listRequest(QString)), SLOT(sendRequest(QString)));
-	connection->sendRequest("list");
+	connection->connect(wizardList, SIGNAL(listRequest(QString)), SLOT(sendGetRequest(QString)));
+	connection->sendGetRequest("sources.list");
 
 	if (wizardList->exec() == QDialog::Accepted) {
 		connection->sourceAdd(wizardList->getSource());
