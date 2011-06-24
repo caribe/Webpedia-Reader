@@ -49,6 +49,7 @@ public:
 private:
 	Source *database;
 	QIcon sourceIcon;
+	QIcon sourceSpecialIcon;
 	QIcon sourceFolderIcon;
 
 signals:

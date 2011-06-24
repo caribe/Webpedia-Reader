@@ -139,19 +139,19 @@ void WizardList::buttonClicked(int id) {
 		stackedContent->setCurrentIndex(0);
 		switch (id) {
 		case 1:
-			emit listRequest("sourcelist");
+			emit listRequest("sources.list");
 			break;
 		case 2:
-			emit listRequest("sourcelist/liked");
+			emit listRequest("sources.list/liked");
 			break;
 		case 3:
-			emit listRequest("sourcelist/recent");
+			emit listRequest("sources.list/recent");
 			break;
 		case 4:
-			emit listRequest("sourcelist/updated");
+			emit listRequest("sources.list/updated");
 			break;
 		case 5:
-			emit listRequest("sourcelist/specials");
+			emit listRequest("sources.list/specials");
 			break;
 		}
 	}

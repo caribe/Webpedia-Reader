@@ -380,6 +380,12 @@ void Connection::descendSourceTree(Source *parent, QDomElement node, ModelSource
 		source->status = node.attribute("status");
 		source->unread = node.attribute("unread").toInt();
 
+		if (node.attribute("type") == "special") {
+			source->type = Source::SpecialFeed;
+		} else {
+			source->type = Source::Feed;
+		}
+
 		QString feed = node.attribute("feed");
 		if (feed.isEmpty() == false) source->feed = feed.toInt();
 

@@ -23,6 +23,11 @@ public:
 		AllPosts
 	};
 
+	enum Types {
+		Feed,
+		SpecialFeed
+	};
+
     explicit Source(QObject *parent = 0);
 	int id, feed, row, unread;
 	bool expanded;
@@ -36,6 +41,7 @@ public:
 	QHash<int, Post *> postsIndex;
 
 	Filters filter;
+	Types type;
 
 	void updateDateTime();
 	bool refreshNeeded();

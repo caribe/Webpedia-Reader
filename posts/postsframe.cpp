@@ -106,7 +106,18 @@ void PostsFrame::openPost()
 		}
 
 		if (QObject::sender()->objectName() == "actionPostExternal") {
-			QDesktopServices::openUrl(QUrl(post->link));
+
+			QUrl url(post->link);
+
+			url.removeQueryItem("utm_source");
+			url.removeQueryItem("utm_medium");
+			url.removeQueryItem("utm_term");
+			url.removeQueryItem("utm_content");
+			url.removeQueryItem("utm_campaign");
+			url.addQueryItem("utm_source", "webpedia");
+			url.addQueryItem("utm_medium", "reader");
+
+			QDesktopServices::openUrl(url);
 		} else {
 			emit linkClicked(QUrl(post->link), post->title);
 		}

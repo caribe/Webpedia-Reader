@@ -3,6 +3,7 @@
 ModelSources::ModelSources(Source *database, QObject *parent) : QAbstractItemModel(parent)
 {
 	sourceIcon = QIcon(":/resources/feed.png");
+	sourceSpecialIcon = QIcon(":/resources/star.png");
 	sourceFolderIcon = QIcon(":/resources/folder-open-feed.png");
 	this->database = database;
 }
@@ -84,7 +85,11 @@ QVariant ModelSources::data(const QModelIndex & index, int role) const
 		case Qt::DecorationRole:
 			if (index.column() == 0) {
 				if (source->feed) {
-					return sourceIcon;
+					if (source->type == Source::SpecialFeed) {
+						return sourceSpecialIcon;
+					} else {
+						return sourceIcon;
+					}
 				} else {
 					return sourceFolderIcon;
 				}
