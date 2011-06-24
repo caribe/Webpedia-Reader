@@ -76,6 +76,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	actionBrowserCloseTab = new QAction(tr("Close Tab"), this);
 	actionBrowserCloseTab->setShortcut(QKeySequence::Close);
 
+	actionHideMenubar = new QAction(tr("Hide menu bar"), this);
+	actionHideMenubar->setCheckable(true);
+	actionHideMenubar->setShortcut(Qt::CTRL + Qt::Key_M);
+
+	addAction(actionHideMenubar);
+
 	// Browser
 
 	browserFrame = new BrowserFrame(this);
@@ -136,9 +142,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connection->connect(actionRefresh, SIGNAL(triggered()), SLOT(update()));
 	connect(actionQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
 
+	connect(actionHideMenubar, SIGNAL(triggered()), SLOT(hideMenuBar()));
+
 	// Menu bar
 
-	QMenuBar *menuBar = new QMenuBar();
+	menuBar = new QMenuBar();
 
 	QMenu *menuFile = new QMenu(tr("&File"));
 
@@ -201,6 +209,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(menuSettingsOptions, SIGNAL(triggered()), SLOT(optionsDialog()));
 	menuSettings->addAction(menuSettingsOptions);
 
+	menuSettings->addAction(actionHideMenubar);
 
 	QMenu *menuHelp = new QMenu(tr("&Help"));
 
@@ -477,4 +486,14 @@ void MainWindow::addSourceByList()
 void MainWindow::showBrowser()
 {
 	splitter2->setCurrentIndex(0);
+}
+
+
+void MainWindow::hideMenuBar()
+{
+	if (actionHideMenubar->isChecked()) {
+		menuBar->hide();
+	} else {
+		menuBar->show();
+	}
 }

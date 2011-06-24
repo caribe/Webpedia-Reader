@@ -36,6 +36,7 @@ class MainWindow : public QMainWindow
 
 private:
 	QMenu *trayIconMenu;
+	QMenuBar *menuBar;
 
 public:
 	MainWindow(QWidget *parent = 0);
@@ -75,6 +76,7 @@ public:
 	QAction *actionPostRead, *actionPostUnread, *actionPostFlag, *actionPostLike, *actionPostDelete, *actionPostView, *actionPostCopy, *actionPostExternal;
 	QAction *actionRefresh, *actionQuit;
 	QAction *actionBrowserShow, *actionBrowserBack, *actionBrowserHome, *actionBrowserCloseTab;
+	QAction *actionHideMenubar;
 
 
 private slots:
@@ -88,6 +90,7 @@ private slots:
 	void addSourceByUrl();
 	void addSourceByList();
 	void showBrowser();
+	void hideMenuBar();
 
 public slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason);
