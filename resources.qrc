@@ -33,5 +33,6 @@
         <file>resources/funnel.png</file>
         <file>resources/external.png</file>
         <file>resources/application-list.png</file>
+        <file>resources/tick-circle.png</file>
     </qresource>
 </RCC>

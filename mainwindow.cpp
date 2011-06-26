@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	setWindowTitle(tr("Webpedia Reader"));
 
-	baseUrl = QString("http://webpedia.altervista.org/");
+	baseUrl = QString("http://webpedia.slakko.org/");
 
 	logged = false;
 
@@ -80,6 +80,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	actionHideMenubar->setCheckable(true);
 	actionHideMenubar->setShortcut(Qt::CTRL + Qt::Key_M);
 
+	actionAddSourceById = new QAction(QIcon(":/resources/feed-plus.png"), tr("Add Source"), this);
+
+
 	addAction(actionHideMenubar);
 
 	// Browser
@@ -143,6 +146,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(actionQuit, SIGNAL(triggered()), SLOT(onBeforeQuit()));
 
 	connect(actionHideMenubar, SIGNAL(triggered()), SLOT(hideMenuBar()));
+	connect(postsFrame->list, SIGNAL(signalAddSourceById(int)), connection, SLOT(sourceAdd(int)));
 
 	// Menu bar
 
@@ -481,6 +485,7 @@ void MainWindow::addSourceByList()
 
 	delete wizardList;
 }
+
 
 
 void MainWindow::showBrowser()

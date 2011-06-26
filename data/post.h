@@ -11,6 +11,7 @@ class Post;
 class Post : public QObject
 {
     Q_OBJECT
+
 public:
     explicit Post(QObject *parent = 0);
 
@@ -27,6 +28,9 @@ public:
 	Status status;
 	QDateTime pubdate;
 	Source *source;
+
+	int feedId, sourceId;
+	QString feedName;
 
 signals:
 

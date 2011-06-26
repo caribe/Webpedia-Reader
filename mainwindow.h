@@ -77,6 +77,7 @@ public:
 	QAction *actionRefresh, *actionQuit;
 	QAction *actionBrowserShow, *actionBrowserBack, *actionBrowserHome, *actionBrowserCloseTab;
 	QAction *actionHideMenubar;
+	QAction *actionAddSourceById;
 
 
 private slots:

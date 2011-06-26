@@ -29,7 +29,6 @@ class Connection : public QNetworkAccessManager
 
 public:
 	Connection(MainWindow *parent = 0);
-	void sourceAdd(int source);
 	void sourceDel(Source *source);
 
 	typedef QHash<QString, QString> ParamHash;
@@ -49,6 +48,7 @@ public slots:
 	void sourceSelected(const QModelIndex & index);
 	void sourceSelected(const QModelIndex & index, const QModelIndex & previous);
 	void addSource(QString url);
+	void sourceAdd(int source);
 	void sourceList();
 	void sendAction(PostsArray &postsArray, Post::Status code);
 	void addFolder(Source *);

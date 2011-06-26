@@ -80,4 +80,5 @@ OTHER_FILES += \
     resources/application-browser.png \
     resources/funnel.png \
     resources/external.png \
-    resources/application-list.png
+    resources/application-list.png \
+    resources/tick-circle.png

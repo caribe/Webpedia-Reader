@@ -162,10 +162,10 @@ void Connection::addSource(QString url)
 }
 
 
-void Connection::sourceAdd(int source)
+void Connection::sourceAdd(int feed)
 {
 	ParamHash data;
-	data["source"] = QString::number(source);
+	data["feed"] = QString::number(feed);
 
 	sendPostRequest(QString("source.follow"), data);
 }
@@ -229,6 +229,7 @@ void Connection::finish(QNetworkReply *reply)
 
 				int preUnreadPosts = mainWindow->sourcesModel->sumUnreadPosts();
 
+				postsModel->currentSource = 0;
 				sourcesModel->clear();
 
 				Source *current = sourcesModel->rootItem();
@@ -300,6 +301,20 @@ void Connection::finish(QNetworkReply *reply)
 						post->body = el.firstChildElement("body").text();
 						post->link = el.firstChildElement("link").text();
 						post->source = source;
+
+						if (el.hasAttribute("feed_id")) {
+							post->feedId = el.attribute("feed_id").toInt();
+							post->feedName = el.attribute("feed_name");
+						} else {
+							post->feedId = 0;
+							post->feedName.clear();
+						}
+
+						if (el.hasAttribute("source")) {
+							post->sourceId = el.attribute("source").toInt();
+						} else {
+							post->sourceId = 0;
+						}
 
 						source->posts.append(post);
 						source->postsIndex.insert(post->id, post);

@@ -28,6 +28,10 @@ PostsList::PostsList(PostsFrame *parent) : QTableView(parent) {
 	contextMenu->addSeparator();
 	contextMenu->addAction(mainWindow->actionPostView);
 	contextMenu->addAction(mainWindow->actionPostExternal);
+	contextMenu->addSeparator();
+	contextMenu->addAction(mainWindow->actionAddSourceById);
+
+	connect(mainWindow->actionAddSourceById, SIGNAL(triggered()), SLOT(slotAddSourceById()));
 
 }
 
@@ -35,7 +39,23 @@ void PostsList::contextMenuEvent(QContextMenuEvent *event) {
 	QModelIndexList indexList = selectionModel()->selectedRows();
 
 	if (indexList.length() > 0) {
+		Post *post = static_cast<Post *>(indexList.last().internalPointer());
+		mainWindow->actionAddSourceById->setEnabled(post->feedId != 0 && post->sourceId == 0 ? true : false);
 		contextMenu->exec(event->globalPos());
 	}
 }
 
+
+void PostsList::slotAddSourceById()
+{
+	QModelIndexList indexList = selectionModel()->selectedRows();
+	if (indexList.length() == 1) {
+
+		Post *post = static_cast<Post *>(indexList.at(0).internalPointer());
+
+		if (post->feedId > 0 && post->sourceId == 0) {
+			emit signalAddSourceById(post->feedId);
+		}
+	}
+
+}

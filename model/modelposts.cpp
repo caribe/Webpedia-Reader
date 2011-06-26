@@ -10,6 +10,7 @@ ModelPosts::ModelPosts(Source *database, QObject *parent) : QAbstractTableModel(
 	statusIcons[Post::read] = QIcon(":/resources/mail-open.png");
 	statusIcons[Post::liked] = QIcon(":/resources/heart.png");
 	statusIcons[Post::flagged] = QIcon(":/resources/flag.png");
+	iconSourceFollowing = QIcon(":/resources/tick-circle.png");
 }
 
 
@@ -79,12 +80,26 @@ QVariant ModelPosts::data(const QModelIndex & index, int role) const {
 		case 3:
 			return post->author;
 		case 4:
-			return post->source->title;
+			if (post->feedId == 0) {
+				return post->source->title;
+			} else {
+				return post->feedName;
+			}
 		}
 	} else if (role == Qt::DecorationRole) {
 		switch (index.column()) {
 		case 0:
 			return statusIcons[post->status];
+		case 4:
+			if (post->feedId == 0) {
+				return QVariant();
+			} else {
+				if (post->sourceId) {
+					return iconSourceFollowing;
+				} else {
+					return QVariant();
+				}
+			}
 		}
 	} else if (role == Qt::UserRole + 1) {
 		return post->id;
@@ -115,7 +130,7 @@ QVariant ModelPosts::headerData(int section, Qt::Orientation orientation, int ro
 
 
 QModelIndex ModelPosts::index(int row, int column, const QModelIndex & parent) const {
-	if (row < currentSource->posts.length()) {
+	if (currentSource && row < currentSource->posts.length()) {
 		Post *post = currentSource->posts[row];
 		return createIndex(row, column, post);
 	} else {

@@ -44,7 +44,7 @@ public:
 private:
 	Source *database;
 	QHash<Post::Status, QIcon> statusIcons;
-	QIcon authorIcon;
+	QIcon authorIcon, iconSourceFollowing;
 
 signals:
 

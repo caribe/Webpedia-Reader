@@ -32,6 +32,12 @@ private:
 public:
 	explicit PostsList(PostsFrame *parent = 0);
 
+private slots:
+	void slotAddSourceById();
+
+signals:
+	void signalAddSourceById(int);
+
 };
 
 #endif // POSTSLIST_H
