@@ -43,6 +43,7 @@ public slots:
 private slots:
 	void actionLink(QUrl link);
 	void openPost();
+	void openPost(const QModelIndex &);
 };
 
 #endif // POSTSFRAME_H
