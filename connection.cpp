@@ -72,6 +72,10 @@ void Connection::sourceSelected(const QModelIndex & index, const QModelIndex & p
 
 void Connection::sourceSelected(const QModelIndex & index)
 {
+	if (mainWindow->tree) {
+
+	}
+
 	Source *source = static_cast<Source *>(index.internalPointer());
 	mainWindow->splitter2->setCurrentIndex(1);
 	mainWindow->postsModel->setSource(source);
@@ -289,6 +293,7 @@ void Connection::finish(QNetworkReply *reply)
 
 				if (source) {
 					QModelIndexList sel = mainWindow->postsFrame->list->selectionModel()->selectedRows();
+					qDebug() << sel.length();
 					postsModel->clear();
 
 					for (QDomElement el = rootN.firstChildElement("post"); !el.isNull(); el = el.nextSiblingElement("post")) {
@@ -326,8 +331,10 @@ void Connection::finish(QNetworkReply *reply)
 
 					foreach (QModelIndex row, sel) {
 						if (row.row() < postsModel->rowCount()) {
+							qDebug() << row.row();
 							mainWindow->postsFrame->list->selectRow(row.row());
 						} else {
+							qDebug() << postsModel->rowCount() - 1;
 							mainWindow->postsFrame->list->selectRow(postsModel->rowCount() - 1);
 						}
 					}
