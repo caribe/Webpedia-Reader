@@ -376,7 +376,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 
 
 void MainWindow::userConnect() {
-	Login *login = new Login();
+	Login *login = new Login(this);
 	if (login->exec() == QDialog::Accepted) {
 		Connection::ParamHash data;
 		data["username"] = login->username->text();

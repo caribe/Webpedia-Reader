@@ -4,7 +4,9 @@
 #include <QDialog>
 #include <QFormLayout>
 #include <QDialogButtonBox>
+#include <QGridLayout>
 #include <QStackedLayout>
+#include <QDebug>
 
 class Wizard;
 
@@ -25,6 +27,7 @@ signals:
 
 private slots:
 	void loginAction();
+	void registerAction();
 
 public slots:
 

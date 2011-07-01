@@ -4,17 +4,28 @@ Login::Login(QWidget *parent) : QDialog(parent)
 {
 	// *** Choose widget
 
-	QVBoxLayout *chooseLayout = new QVBoxLayout();
+	QIcon icon = parent->windowIcon();
+	QSize size = icon.actualSize(QSize(64, 64));
+
+	QLabel *iconLabel = new QLabel();
+	iconLabel->setPixmap(icon.pixmap(size));
 
 	QPushButton *chooseLogin = new QPushButton(tr("Use existing account"));
 	connect(chooseLogin, SIGNAL(clicked()), SLOT(loginAction()));
-	chooseLayout->addWidget(chooseLogin);
 
 	QPushButton *chooseRegister = new QPushButton(tr("Register new account"));
-	chooseLayout->addWidget(chooseRegister);
+	connect(chooseRegister, SIGNAL(clicked()), SLOT(registerAction()));
+
+	QVBoxLayout *chooseVLayout = new QVBoxLayout();
+	chooseVLayout->addWidget(chooseLogin);
+	chooseVLayout->addWidget(chooseRegister);
+
+	QHBoxLayout *chooseHLayout = new QHBoxLayout();
+	chooseHLayout->addWidget(iconLabel, 0, Qt::AlignTop);
+	chooseHLayout->addLayout(chooseVLayout, 1);
 
 	QWidget *chooseWidget = new QWidget(this);
-	chooseWidget->setLayout(chooseLayout);
+	chooseWidget->setLayout(chooseHLayout);
 
 	// *** Login widget
 
@@ -63,5 +74,12 @@ Login::Login(QWidget *parent) : QDialog(parent)
 
 
 void Login::loginAction() {
+	stack->setCurrentIndex(1);
+}
+
+
+void Login::registerAction()
+{
+	QDesktopServices::openUrl(QUrl("http://webpedia.altervista.org/registrazione.html"));
 	stack->setCurrentIndex(1);
 }

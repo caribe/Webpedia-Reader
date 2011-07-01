@@ -318,6 +318,8 @@ void Connection::finish(QNetworkReply *reply)
 
 						source->posts.append(post);
 						source->postsIndex.insert(post->id, post);
+
+						sourcesModel->updateUnreadCount(source);
 					}
 
 					postsModel->flush();
