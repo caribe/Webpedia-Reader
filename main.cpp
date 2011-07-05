@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("Webpedia");
 	QCoreApplication::setOrganizationDomain("webpedia.altervista.org");
 	QCoreApplication::setApplicationName("Reader");
+	QCoreApplication::setApplicationVersion("1.0.0");
 
     MainWindow w;
     w.show();
