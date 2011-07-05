@@ -237,26 +237,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	// Toolbar
 
-	QToolBar *toolbar = new QToolBar(this);
-	toolbar->setMovable(false);
+	QToolBar *toolbarRefresh = new QToolBar(tr("Refresh Toolbar"), this);
+	toolbarRefresh->addAction(actionRefresh);
 
-	toolbar->addAction(actionRefresh);
+	QToolBar *toolbarPosts = new QToolBar(tr("Posts Toolbar"), this);
+	toolbarPosts->addAction(actionPostRead);
+	toolbarPosts->addAction(actionPostUnread);
+	toolbarPosts->addAction(actionPostFlag);
+	toolbarPosts->addAction(actionPostLike);
+	toolbarPosts->addAction(actionPostDelete);
 
-	toolbar->addSeparator();
+	QToolBar *toolbarBrowser = new QToolBar(tr("Browser Toolbar"), this);
+	toolbarBrowser->addAction(actionBrowserBack);
+	toolbarBrowser->addAction(actionBrowserHome);
+	toolbarBrowser->addAction(actionBrowserShow);
 
-	toolbar->addAction(actionPostRead);
-	toolbar->addAction(actionPostUnread);
-	toolbar->addAction(actionPostFlag);
-	toolbar->addAction(actionPostLike);
-	toolbar->addAction(actionPostDelete);
-
-	toolbar->addSeparator();
-
-	toolbar->addAction(actionBrowserBack);
-	toolbar->addAction(actionBrowserHome);
-	toolbar->addAction(actionBrowserShow);
-
-	addToolBar(toolbar);
+	addToolBar(toolbarRefresh);
+	addToolBar(toolbarPosts);
+	addToolBar(toolbarBrowser);
 
 
 	// Tray Icon
