@@ -13,6 +13,7 @@ PostsFrame::PostsFrame(ModelPosts *postsModel, MainWindow *parent) : QSplitter(p
 
 	connect(list->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(postSelected(QModelIndex,QModelIndex)));
 	connect(postsModel, SIGNAL(modelReset()), list, SLOT(resizeColumnsToContents()));
+	connect(list, SIGNAL(doubleClicked(QModelIndex)), SLOT(openPost(QModelIndex)));
 
 	// *** Viewer
 
@@ -93,36 +94,44 @@ void PostsFrame::actionLink(QUrl link)
 
 
 
+void PostsFrame::openPost(const QModelIndex &index)
+{
+	Post *post = static_cast<Post *>(index.internalPointer());
+
+	if (post->status == Post::unread) {
+		PostsArray postsList;
+		postsList << post;
+		emit action(postsList, Post::read);
+	}
+
+	if (QObject::sender()->objectName() == "actionPostExternal") {
+
+		QUrl url(post->link);
+
+		url.removeQueryItem("utm_source");
+		url.removeQueryItem("utm_medium");
+		url.removeQueryItem("utm_term");
+		url.removeQueryItem("utm_content");
+		url.removeQueryItem("utm_campaign");
+		url.addQueryItem("utm_source", "webpedia");
+		url.addQueryItem("utm_medium", "reader");
+
+		QDesktopServices::openUrl(url);
+	} else {
+		emit linkClicked(QUrl(post->link), post->title);
+	}
+}
+
+
+
 void PostsFrame::openPost()
 {
 	QModelIndexList indexes = list->selectionModel()->selectedRows();
 	if (indexes.length() > 0) {
-		Post *post = static_cast<Post *>(indexes.at(0).internalPointer());
-
-		if (post->status == Post::unread) {
-			PostsArray postsList;
-			postsList << post;
-			emit action(postsList, Post::read);
-		}
-
-		if (QObject::sender()->objectName() == "actionPostExternal") {
-
-			QUrl url(post->link);
-
-			url.removeQueryItem("utm_source");
-			url.removeQueryItem("utm_medium");
-			url.removeQueryItem("utm_term");
-			url.removeQueryItem("utm_content");
-			url.removeQueryItem("utm_campaign");
-			url.addQueryItem("utm_source", "webpedia");
-			url.addQueryItem("utm_medium", "reader");
-
-			QDesktopServices::openUrl(url);
-		} else {
-			emit linkClicked(QUrl(post->link), post->title);
-		}
+		openPost(indexes.at(0));
 	}
 }
+
 
 
 void PostsFrame::actionLinkCopy()

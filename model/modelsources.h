@@ -38,7 +38,7 @@ public:
 	// Utils
 	void clearBranch(Source *source);
 	QModelIndex indexBySource(Source *source, Source *parent = 0);
-	void updateUnreadCount(Source *source, int value);
+	void updateUnreadCount(Source *source, int value = 0);
 	int sumUnreadPosts(Source *source = 0) const;
 
 	void updatePost(int source_id, int post_id, Post::Status status);

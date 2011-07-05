@@ -100,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connection->connect(sourcesModel, SIGNAL(sourceMoved(Source*,Source*,int)), SLOT(moveFolder(Source*,Source*,int)));
 	connection->connect(sourcesModel, SIGNAL(sourceRenamed(Source*)), SLOT(renameFolder(Source*)));
 	connection->connect(tree->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(sourceSelected(QModelIndex,QModelIndex)));
-	connection->connect(tree, SIGNAL(clicked(QModelIndex)), SLOT(sourceSelected(QModelIndex)));
+	connect(tree, SIGNAL(clicked(QModelIndex)), SLOT(hideBrowser()));
 	connection->connect(tree, SIGNAL(addFolderSignal(Source*)), SLOT(addFolder(Source *)));
 	connection->connect(tree, SIGNAL(expandFolderSignal(Source *)), SLOT(folderExpand(Source *)));
 	connection->connect(tree, SIGNAL(collapseFolderSignal(Source *)), SLOT(folderCollapse(Source *)));
@@ -237,26 +237,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	// Toolbar
 
-	QToolBar *toolbar = new QToolBar(this);
-	toolbar->setMovable(false);
+	QToolBar *toolbarRefresh = new QToolBar(tr("Refresh Toolbar"), this);
+	toolbarRefresh->addAction(actionRefresh);
 
-	toolbar->addAction(actionRefresh);
+	QToolBar *toolbarPosts = new QToolBar(tr("Posts Toolbar"), this);
+	toolbarPosts->addAction(actionPostRead);
+	toolbarPosts->addAction(actionPostUnread);
+	toolbarPosts->addAction(actionPostFlag);
+	toolbarPosts->addAction(actionPostLike);
+	toolbarPosts->addAction(actionPostDelete);
 
-	toolbar->addSeparator();
+	QToolBar *toolbarBrowser = new QToolBar(tr("Browser Toolbar"), this);
+	toolbarBrowser->addAction(actionBrowserBack);
+	toolbarBrowser->addAction(actionBrowserHome);
+	toolbarBrowser->addAction(actionBrowserShow);
 
-	toolbar->addAction(actionPostRead);
-	toolbar->addAction(actionPostUnread);
-	toolbar->addAction(actionPostFlag);
-	toolbar->addAction(actionPostLike);
-	toolbar->addAction(actionPostDelete);
-
-	toolbar->addSeparator();
-
-	toolbar->addAction(actionBrowserBack);
-	toolbar->addAction(actionBrowserHome);
-	toolbar->addAction(actionBrowserShow);
-
-	addToolBar(toolbar);
+	addToolBar(toolbarRefresh);
+	addToolBar(toolbarPosts);
+	addToolBar(toolbarBrowser);
 
 
 	// Tray Icon
@@ -376,7 +374,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 
 
 void MainWindow::userConnect() {
-	Login *login = new Login();
+	Login *login = new Login(this);
 	if (login->exec() == QDialog::Accepted) {
 		Connection::ParamHash data;
 		data["username"] = login->username->text();
