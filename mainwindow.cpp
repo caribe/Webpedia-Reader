@@ -7,9 +7,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	setWindowTitle(tr("Webpedia Reader"));
 
-	baseUrl = QString("http://webpedia.altervista.org/");
+	baseUrl = QString("http://webpedia.slakko.org/");
 
 	logged = false;
+	login = NULL;
 
 	// Model
 
@@ -148,7 +149,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(actionHideMenubar, SIGNAL(triggered()), SLOT(hideMenuBar()));
 	connect(postsFrame->list, SIGNAL(signalAddSourceById(int)), connection, SLOT(sourceAdd(int)));
 
-	// Menu bar
+	// Menu barregisterLayout
 
 	menuBar = new QMenuBar();
 
@@ -323,7 +324,7 @@ void MainWindow::init() {
 	// Poller
 
 	user = settings.value("user/user").toString();
-	// poller->start(settings.value("settings/updateFrequency", 60).toInt() * 60000);
+	language = settings.value("user/language", "en_US").toString();
 
 	// Settings
 
@@ -341,6 +342,7 @@ void MainWindow::init() {
 	}
 
 	poller = new QTimer(this);
+	poller->start(settings.value("settings/updateFrequency", 60).toInt() * 60000);
 	connection->connect(poller, SIGNAL(timeout()), SLOT(update()));
 
 }
@@ -373,15 +375,14 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 }
 
 
-void MainWindow::userConnect() {
-	Login *login = new Login(this);
-	if (login->exec() == QDialog::Accepted) {
-		Connection::ParamHash data;
-		data["username"] = login->username->text();
-		data["password"] = login->password->text();
-
-		connection->sendAuthRequest("account.login", data);
+void MainWindow::userConnect(Login::Forms form) {
+	if (login == NULL) {
+		login = new Login(this);
+		connect(login, SIGNAL(loginRequest(QString,QString)), SLOT(loginRequest(QString,QString)));
+		connect(login, SIGNAL(registerRequest(QString,QString)), SLOT(registerRequest(QString,QString)));
 	}
+	login->setForm(form);
+	login->open();
 }
 
 
@@ -499,4 +500,20 @@ void MainWindow::hideMenuBar()
 	} else {
 		menuBar->show();
 	}
+}
+
+
+void MainWindow::registerRequest(const QString &username, const QString &email) {
+	Connection::ParamHash data;
+	data["username"] = username;
+	data["email"] = email;
+	connection->sendAuthRequest("account.register", data);
+}
+
+
+void MainWindow::loginRequest(const QString &username, const QString &password) {
+	Connection::ParamHash data;
+	data["username"] = username;
+	data["password"] = password;
+	connection->sendAuthRequest("account.login", data);
 }

@@ -2,62 +2,100 @@
 
 Login::Login(QWidget *parent) : QDialog(parent)
 {
-	// *** Choose widget
+	// *** Webpedia icon
 
 	QIcon icon = parent->windowIcon();
-	QSize size = icon.actualSize(QSize(64, 64));
+	QSize size = icon.actualSize(QSize(128, 128));
 
-	QLabel *iconLabel = new QLabel();
-	iconLabel->setPixmap(icon.pixmap(size));
+	// *** Choose widget
 
-	QPushButton *chooseLogin = new QPushButton(tr("Use existing account"));
-	connect(chooseLogin, SIGNAL(clicked()), SLOT(loginAction()));
+	QLabel *chooseLabel = new QLabel();
+	chooseLabel->setPixmap(icon.pixmap(size));
+	chooseLabel->setAlignment(Qt::AlignCenter);
 
-	QPushButton *chooseRegister = new QPushButton(tr("Register new account"));
-	connect(chooseRegister, SIGNAL(clicked()), SLOT(registerAction()));
+	chooseLogin = new QRadioButton(tr("Use &existing account"), this);
+	chooseRegister = new QRadioButton(tr("Register &new account"), this);
 
-	QVBoxLayout *chooseVLayout = new QVBoxLayout();
-	chooseVLayout->addWidget(chooseLogin);
-	chooseVLayout->addWidget(chooseRegister);
+	QDialogButtonBox *buttonBox = new QDialogButtonBox();
+	buttonBox->addButton(tr("&Next >"), QDialogButtonBox::AcceptRole);
+	buttonBox->addButton(QDialogButtonBox::Cancel);
+	connect(buttonBox, SIGNAL(accepted()), SLOT(chooseAction()));
+	connect(buttonBox, SIGNAL(rejected()), SLOT(reject()));
 
-	QHBoxLayout *chooseHLayout = new QHBoxLayout();
-	chooseHLayout->addWidget(iconLabel, 0, Qt::AlignTop);
-	chooseHLayout->addLayout(chooseVLayout, 1);
+	QVBoxLayout *chooseLayout = new QVBoxLayout();
+	chooseLayout->addWidget(chooseLabel, 1);
+	chooseLayout->addWidget(chooseLogin);
+	chooseLayout->addWidget(chooseRegister);
+	chooseLayout->addWidget(buttonBox);
 
-	QWidget *chooseWidget = new QWidget(this);
-	chooseWidget->setLayout(chooseHLayout);
+	QWidget *chooseWidget = new QWidget();
+	chooseWidget->setLayout(chooseLayout);
+
 
 	// *** Login widget
 
-	QVBoxLayout *loginLayout = new QVBoxLayout();
+	QLabel *loginLabel = new QLabel();
+	loginLabel->setPixmap(icon.pixmap(size));
+	loginLabel->setAlignment(Qt::AlignCenter);
 
 	// Form
 
+	QVBoxLayout *loginLayout = new QVBoxLayout();
+	loginLayout->addWidget(loginLabel);
+
 	QFormLayout *loginFormLayout = new QFormLayout();
+	loginUsername = new QLineEdit();
+	loginPassword = new QLineEdit();
+	loginPassword->setEchoMode(QLineEdit::Password);
 
-	username = new QLineEdit();
-	password = new QLineEdit();
-	password->setEchoMode(QLineEdit::Password);
-
-	loginFormLayout->addRow(tr("&Username:"), username);
-	loginFormLayout->addRow(tr("&Password:"), password);
+	loginFormLayout->addRow(tr("&Username:"), loginUsername);
+	loginFormLayout->addRow(tr("&Password:"), loginPassword);
 
 	loginLayout->addLayout(loginFormLayout);
 
 	// Buttons
 
-	QDialogButtonBox *loginGroup = new QDialogButtonBox();
+	QDialogButtonBox *loginButtonBox = new QDialogButtonBox();
 
-	loginGroup->addButton(tr("OK"), QDialogButtonBox::AcceptRole);
-	loginGroup->addButton(tr("Cancel"), QDialogButtonBox::RejectRole);
+	loginButtonBox->addButton(QDialogButtonBox::Ok);
+	loginButtonBox->addButton(QDialogButtonBox::Cancel);
+	connect(loginButtonBox, SIGNAL(accepted()), SLOT(loginAction()));
+	connect(loginButtonBox, SIGNAL(rejected()), SLOT(reject()));
 
-	this->connect(loginGroup, SIGNAL(accepted()), SLOT(accept()));
-	this->connect(loginGroup, SIGNAL(rejected()), SLOT(reject()));
-
-	loginLayout->addWidget(loginGroup);
+	loginLayout->addWidget(loginButtonBox);
 
 	QWidget *loginWidget = new QWidget(this);
 	loginWidget->setLayout(loginLayout);
+
+	// *** Register widget
+
+	// Form
+
+	QFormLayout *registerForm = new QFormLayout();
+
+	registerUsername = new QLineEdit();
+	registerEmail = new QLineEdit();
+	registerCheckBox = new QCheckBox(tr("I read and accepted the TOS"));
+
+	registerForm->addRow(tr("Username"), registerUsername);
+	registerForm->addRow(tr("eMail"), registerEmail);
+	registerForm->addRow(registerCheckBox);
+
+	// Buttons
+
+	QDialogButtonBox *registerButtonBox = new QDialogButtonBox();
+
+	registerButtonBox->addButton(QDialogButtonBox::Ok);
+	registerButtonBox->addButton(QDialogButtonBox::Cancel);
+	connect(registerButtonBox, SIGNAL(accepted()), SLOT(registerAction()));
+	connect(registerButtonBox, SIGNAL(rejected()), SLOT(reject()));
+
+	QVBoxLayout *registerLayout = new QVBoxLayout();
+	registerLayout->addLayout(registerForm);
+	registerLayout->addWidget(registerButtonBox);
+
+	QWidget *registerWidget = new QWidget(this);
+	registerWidget->setLayout(registerLayout);
 
 	// *** Stack
 
@@ -65,21 +103,60 @@ Login::Login(QWidget *parent) : QDialog(parent)
 
 	stack->addWidget(chooseWidget);
 	stack->addWidget(loginWidget);
+	stack->addWidget(registerWidget);
 
 	stack->setCurrentIndex(0);
 
-	setLayout(stack);
 	resize(320, 240);
+	setLayout(stack);
 }
 
 
-void Login::loginAction() {
-	stack->setCurrentIndex(1);
+void Login::setForm(Login::Forms form)
+{
+	stack->setCurrentIndex(form);
+}
+
+
+void Login::chooseAction()
+{
+	if (chooseLogin->isChecked()) {
+		setForm(LoginForm);
+	} else if (chooseRegister->isChecked()) {
+		setForm(RegisterForm);
+	}
+}
+
+
+void Login::loginAction()
+{
+	QString username = loginUsername->text();
+	QString password = loginPassword->text();
+
+	if (username.isEmpty()) {
+		QMessageBox::critical(this, tr("Login"), tr("You give no username"));
+	} else if (password.isEmpty()) {
+		QMessageBox::critical(this, tr("Login"), tr("You give no password"));
+	} else {
+		emit loginRequest(username, password);
+		accept();
+	}
 }
 
 
 void Login::registerAction()
 {
-	QDesktopServices::openUrl(QUrl("http://webpedia.altervista.org/registrazione.html"));
-	stack->setCurrentIndex(1);
+	QString username = registerUsername->text();
+	QString email = registerEmail->text();
+
+	if (username.isEmpty()) {
+		QMessageBox::critical(this, tr("Register"), tr("You give no username"));
+	} else if (email.isEmpty()) {
+		QMessageBox::critical(this, tr("Register"), tr("You give no email"));
+	} else if (registerCheckBox->isChecked() == false) {
+		QMessageBox::critical(this, tr("Register"), tr("You don't accepted the TOS"));
+	} else {
+		emit registerRequest(username, email);
+		accept();
+	}
 }

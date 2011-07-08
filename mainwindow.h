@@ -52,8 +52,8 @@ public:
 
 	QStandardItemModel *sourcesListModel;
 	SourceFrame *tree;
-	Wizard *wizard;
 	Connection *connection;
+	Login *login;
 	QString baseUrl;
 	PostsFrame *postsFrame;
 	BrowserFrame *browserFrame;
@@ -63,9 +63,7 @@ public:
 
 	QAction *menuConnect, *menuDisconnect;
 
-	QString username;
-	QString token;
-	QString user;
+	QString username, token, user, language;
 
 	QLabel *statusLabel;
 
@@ -92,10 +90,12 @@ private slots:
 	void addSourceByList();
 	void showBrowser();
 	void hideMenuBar();
+	void registerRequest(const QString &, const QString &);
+	void loginRequest(const QString &, const QString &);
 
 public slots:
 	void iconActivated(QSystemTrayIcon::ActivationReason);
-	void userConnect();
+	void userConnect(Login::Forms form = Login::ChooseForm);
 	void userDisconnect();
 };
 

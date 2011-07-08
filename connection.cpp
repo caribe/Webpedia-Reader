@@ -14,6 +14,7 @@ void Connection::sendAuthRequest(QString action, ParamHash &data)
 	mainWindow->setStatus(tr("Connection"), true);
 
 	QNetworkRequest request(QUrl(mainWindow->baseUrl+"reader."+action+"/"));
+	data["lang"] = mainWindow->language;
 	post(request, postDataEncoding(data));
 }
 
@@ -221,15 +222,17 @@ void Connection::finish(QNetworkReply *reply)
 	for (unsigned int rootI = 0; rootI < rootC.length(); rootI++) {
 		QDomNode rootN = rootC.item(rootI);
 		if (rootN.isElement()) {
-			if (rootN.toElement().tagName() == "message") {
+			QDomElement rootE = rootN.toElement();
+
+			if (rootE.tagName() == "message") {
 
 				QMessageBox::information(mainWindow, "Informazione", rootN.toElement().text());
 
-			} else if (rootN.toElement().tagName() == "error") {
+			} else if (rootE.tagName() == "error") {
 
 				QMessageBox::critical(mainWindow, "Errore", rootN.toElement().text());
 
-			} else if (rootN.toElement().tagName() == "sources") {
+			} else if (rootE.tagName() == "sources") {
 
 				int preUnreadPosts = mainWindow->sourcesModel->sumUnreadPosts();
 
@@ -253,7 +256,7 @@ void Connection::finish(QNetworkReply *reply)
 					}
 				}
 
-			} else if (rootN.toElement().tagName() == "sources-list") {
+			} else if (rootE.tagName() == "sources-list") {
 
 				QStringList headerLabels;
 				headerLabels << tr("Source") << tr("Followers") << tr("Posts");
@@ -283,10 +286,9 @@ void Connection::finish(QNetworkReply *reply)
 					sourcesListModel->appendRow(row);
 				}
 
-			} else if (rootN.toElement().tagName() == "posts") {
+			} else if (rootE.tagName() == "posts") {
 
 				// Source ID
-				QDomElement rootE = rootN.toElement();
 				int source_id = rootE.attribute("source").toInt();
 
 				Source *source = sourcesModel->sourcesIndex[source_id];
@@ -342,7 +344,7 @@ void Connection::finish(QNetworkReply *reply)
 					source->updateDateTime();
 				}
 
-			} else if (rootN.toElement().tagName() == "posts-update") {
+			} else if (rootE.tagName() == "posts-update") {
 
 				QModelIndexList selection = mainWindow->postsFrame->list->selectionModel()->selectedRows();
 				postsModel->changed();
@@ -364,22 +366,32 @@ void Connection::finish(QNetworkReply *reply)
 					}
 				}
 
-			} else if (rootN.toElement().tagName() == "login") {
+			} else if (rootE.tagName() == "login") {
 
-				mainWindow->token = rootN.firstChildElement("token").text();
-				mainWindow->username = rootN.firstChildElement("username").text();
-				mainWindow->user = rootN.firstChildElement("user").text();
+				QString result = rootE.attribute("reload", "none");
 
-				QSettings settings;
+				if (result == "none") {
 
-				settings.setValue("user/user", mainWindow->user);
-				settings.setValue("user/username", mainWindow->username);
-				settings.setValue("user/token", mainWindow->token);
+					mainWindow->token = rootN.firstChildElement("token").text();
+					mainWindow->username = rootN.firstChildElement("username").text();
+					mainWindow->user = rootN.firstChildElement("user").text();
 
-				settings.sync();
+					QSettings settings;
 
-				mainWindow->menuConnect->setVisible(false);
-				mainWindow->menuDisconnect->setVisible(true);
+					settings.setValue("user/user", mainWindow->user);
+					settings.setValue("user/username", mainWindow->username);
+					settings.setValue("user/token", mainWindow->token);
+
+					settings.sync();
+
+					mainWindow->menuConnect->setVisible(false);
+					mainWindow->menuDisconnect->setVisible(true);
+
+				} else if (result == "login") {
+					mainWindow->userConnect(Login::LoginForm);
+				} else if (result == "register") {
+					mainWindow->userConnect(Login::RegisterForm);
+				}
 
 			}
 		}
