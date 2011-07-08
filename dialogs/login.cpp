@@ -89,7 +89,7 @@ Login::Login(QWidget *parent) : QDialog(parent)
 	registerButtonBox->addButton(QDialogButtonBox::Cancel);
 	connect(registerButtonBox, SIGNAL(accepted()), SLOT(registerAction()));
 	connect(registerButtonBox, SIGNAL(rejected()), SLOT(reject()));
-
+\
 	QVBoxLayout *registerLayout = new QVBoxLayout();
 	registerLayout->addLayout(registerForm);
 	registerLayout->addWidget(registerButtonBox);
