@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 	setWindowTitle(tr("Webpedia Reader"));
 
-	baseUrl = QString("http://webpedia.slakko.org/");
+	baseUrl = QString("http://webpedia.altervista.org/");
 
 	logged = false;
 	login = NULL;
