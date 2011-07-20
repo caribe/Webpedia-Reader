@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/languages">
+        <file alias="lang-it">languages/webpedia_it.qm</file>
+    </qresource>
+</RCC>

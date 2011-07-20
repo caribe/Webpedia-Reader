@@ -9,6 +9,8 @@ QT       += core gui webkit network xml
 TARGET = WebpediaFeeds
 TEMPLATE = app
 
+TRANSLATIONS = languages/webpedia_it.ts
+CODECFORTR = UTF-8
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -42,7 +44,8 @@ HEADERS  += mainwindow.h \
     dialogs/wizardlist.h
 
 RESOURCES += \
-    resources.qrc
+    resources.qrc \
+    languages.qrc
 
 OTHER_FILES += \
     resources/webpedia.png \
@@ -81,4 +84,7 @@ OTHER_FILES += \
     resources/funnel.png \
     resources/external.png \
     resources/application-list.png \
-    resources/tick-circle.png
+    resources/tick-circle.png \
+    webpedia_it.ts \
+    languages/webpedia_it.ts \
+    languages/webpedia_it.qm
